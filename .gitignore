@@ -1,0 +1,7 @@
+/obj/
+/lib/
+/alire/
+/config/
+.vscode
+/scenes/*
+/bin/

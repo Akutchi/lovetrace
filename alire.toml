@@ -1,0 +1,13 @@
+name = "lovetrace"
+description = "a path tracer library in ada"
+version = "0.1.0-dev"
+
+authors = ["Kaitlyn"]
+maintainers = ["Kaitlyn <kaitlyn.buffler@tutamail.com>"]
+maintainers-logins = ["Akutchi"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = ["ada", "path-tracing", "image-synthesis"]
+
+[[depends-on]]
+image_io = "^20240725.0.0"
