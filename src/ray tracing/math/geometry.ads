@@ -7,6 +7,12 @@ package Geometry is
       x, y, z, w : Float;
    end record;
 
+   function "+" (u, v : Vertex) return Vertex;
+   function "-" (u, v : Vertex) return Vertex;
+   function "*" (k : Float; u : Vertex) return Vertex;
+   function "*" (k : Integer; u : Vertex) return Vertex;
+   function norm (v : Vertex) return Vertex;
+
    type Texture is record
 
       u, v, w : Float;
@@ -17,13 +23,16 @@ package Geometry is
       x, y, z : Float;
    end record;
 
-   type FV_List is array (Positive range 1 .. 3) of Positive;
+   function "*" (u : Vertex; N : Normal) return Float;
+   function norm (v : Normal) return Normal;
+
+   type Indices_List is array (Positive range 1 .. 3) of Positive;
 
    type Face is record
 
-      Face_Vertices : FV_List;
-      Face_Textures : FV_List;
-      Face_Normals  : FV_List;
+      Vertices_Indices : Indices_List;
+      Textures_Indices : Indices_List;
+      Normals_Indices  : Indices_List;
 
    end record;
 
@@ -38,7 +47,5 @@ package Geometry is
 
    package F_List is new Ada.Containers.Indefinite_Vectors
      (Index_Type => Positive, Element_Type => Face, "=" => "=");
-
-   function norm (v : Normal) return Normal;
 
 end Geometry;

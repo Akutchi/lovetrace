@@ -11,3 +11,4 @@ tags = ["ada", "path-tracing", "image-synthesis"]
 
 [[depends-on]]
 image_io = "^20240725.0.0"
+

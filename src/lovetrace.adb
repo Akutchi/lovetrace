@@ -6,6 +6,8 @@ with ObjLoader;
 with Geometry;
 with Camera;
 with Renderer;
+with Tracing;
+with Colors;
 
 procedure Lovetrace is
 
@@ -13,9 +15,11 @@ procedure Lovetrace is
    package IIO_H renames Image_IO.Holders;
    package IIO_O renames Image_IO.Operations;
 
+   package G renames Geometry;
+
    Objs : ObjLoader.Scene;
 
-   o : constant Geometry.Vertex := (0.0, 0.0, 10.0, 1.0);
+   o : constant G.Vertex := (0.0, 0.0, 10.0, 1.0);
 
    Screen : constant Camera.Screen_Details :=
      (Demi_Width => 50, Demi_Height => 50, Distance_From_The_Eye => 5,
@@ -39,6 +43,11 @@ begin
 
    declare
       Data : IIO.Image_Data := Image.Value;
+
+      non_norm_dir, dir : G.Vertex;
+      R                 : Tracing.Ray;
+      Pixel_Color       : Colors.Color;
+
    begin
 
       for X in MIN_X .. MAX_X loop
@@ -47,7 +56,15 @@ begin
             cam.screen.x := X;
             cam.screen.y := Y;
 
-            Renderer.Put_Pixel (Data, Renderer.RED, cam);
+            non_norm_dir :=
+              (Float (cam.screen.x), Float (cam.screen.y), Float (cam.n), 1.0);
+            non_norm_dir := G."-" (non_norm_dir, o);
+            dir          := G.norm (non_norm_dir);
+
+            R := Tracing.Init_Ray (o, dir, Float (cam.n), Float (cam.f));
+            Pixel_Color := Tracing.Cast (R, Objs);
+
+            Renderer.Put_Pixel (Data, Pixel_Color, cam);
 
          end loop;
       end loop;

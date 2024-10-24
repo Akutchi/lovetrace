@@ -6,6 +6,8 @@ with Image_IO.Operations;
 
 with Camera;
 
+with Colors; use Colors;
+
 package Renderer is
 
    package IIO renames Image_IO;
@@ -13,13 +15,6 @@ package Renderer is
    package IIO_O renames Image_IO.Operations;
 
    Image_Destination : constant String := "../scenes_image/";
-
-   type Color is record
-
-      Red, Green, Blue : Float;
-   end record;
-
-   RED : constant Color := (1.0, 0.0, 0.0);
 
    function Float_To_UInt8 (x : Float) return Interfaces.Unsigned_8;
 

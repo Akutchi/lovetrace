@@ -123,7 +123,7 @@ package body ObjLoader_Utils is
 
       Token_List, Tmp_List : Line_Components.Vector;
 
-      Vertices, Textures, Normals : Geometry.FV_List;
+      Vertices, Textures, Normals : Geometry.Indices_List;
 
       I : Positive := 1;
 
