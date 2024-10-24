@@ -1,4 +1,3 @@
-with Interfaces;
 with Ada.Containers.Indefinite_Vectors;
 
 package Geometry is
@@ -39,8 +38,6 @@ package Geometry is
 
    package F_List is new Ada.Containers.Indefinite_Vectors
      (Index_Type => Positive, Element_Type => Face, "=" => "=");
-
-   function Float_To_UInt8 (x : Float) return Interfaces.Unsigned_8;
 
    function norm (v : Normal) return Normal;
 

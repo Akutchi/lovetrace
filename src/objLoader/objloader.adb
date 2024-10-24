@@ -29,7 +29,7 @@ package body ObjLoader is
       while not T_IO.End_Of_File (ObjFile) loop
 
          declare
-            Line : String := T_IO.Get_Line (ObjFile);
+            Line : constant String := T_IO.Get_Line (ObjFile);
          begin
 
             if Line /= "" then

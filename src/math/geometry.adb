@@ -4,15 +4,6 @@ package body Geometry is
 
    package N_EF renames Ada.Numerics.Elementary_Functions;
 
-   --------------------
-   -- Float_To_UInt8 --
-   --------------------
-
-   function Float_To_UInt8 (x : Float) return Interfaces.Unsigned_8 is
-   begin
-      return Interfaces.Unsigned_8 (Float'Rounding (x * 255.0));
-   end Float_To_UInt8;
-
    ----------
    -- norm --
    ----------
@@ -20,7 +11,7 @@ package body Geometry is
    function norm (v : Normal) return Normal is
 
       vect_norm : Float;
-      epsilon   : Float := 0.001;
+      epsilon   : constant Float := 0.001;
    begin
 
       vect_norm := N_EF.Sqrt (v.x**2 + v.y**2 + v.z**2);
