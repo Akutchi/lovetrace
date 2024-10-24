@@ -4,17 +4,16 @@ package body Camera is
      (o : Geometry.Vertex; Screen : Screen_Details) return Apparatus
    is
 
-      l : constant Integer := Integer (Screen.top_right.x) / 2;
-      r : constant Integer := Integer (Screen.top_right.x) - l;
-      t : constant Integer := Integer (Screen.bottom_left.y) / 2;
-      b : constant Integer := Integer (Screen.bottom_left.y) - t;
-
-      n : constant Integer := Integer (Screen.top_right.z);
-      f : constant Integer := n - Screen.vision;
+      f : constant Integer :=
+        Integer (o.z) - Integer (Screen.Distance_From_The_Eye) -
+        Integer (Screen.vision);
 
    begin
 
-      return (o, Screen, l, r, t, b, n, f);
+      return
+        (o, Screen, l => Screen.Demi_Width, r => Screen.Demi_Width,
+         t            => Screen.Demi_Height, b => Screen.Demi_Height,
+         n            => Screen.Distance_From_The_Eye, f => f);
 
    end Create_Apparatus;
 

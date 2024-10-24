@@ -30,8 +30,8 @@ package body Renderer is
    procedure Create_Image (File_Name : String; cam : Camera.Apparatus) is
 
       Image  : IIO_H.Handle;
-      Width  : constant Positive := Positive (abs (cam.screen.top_right.x));
-      Height : constant Positive := Positive (abs (cam.screen.bottom_left.y));
+      Width  : constant Positive := 2 * cam.screen.Demi_Width;
+      Height : constant Positive := 2 * cam.screen.Demi_Height;
 
    begin
 

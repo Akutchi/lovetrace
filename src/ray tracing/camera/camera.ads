@@ -4,17 +4,19 @@ package Camera is
 
    type Screen_Details is record
 
-      top_right, bottom_left : Geometry.Vertex;
-      vision                 : Integer;
-      x, y                   : Integer;
+      Demi_Width, Demi_Height : Positive;
+      Distance_From_The_Eye   : Positive;  --  z : axis opposed to the scene
+      vision                  : Positive;
+      x, y                    : Integer; --  (0, 0) is at the center
 
    end record;
 
    type Apparatus is record
 
-      o                : Geometry.Vertex;
-      screen           : Screen_Details;
-      l, r, t, b, n, f : Integer;
+      o          : Geometry.Vertex;
+      screen     : Screen_Details;
+      l, r, t, b : Positive;
+      n, f       : Integer;
 
    end record;
 
