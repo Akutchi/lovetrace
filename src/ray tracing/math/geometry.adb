@@ -1,8 +1,11 @@
 with Ada.Numerics.Elementary_Functions;
 
+with Ada.Text_IO;
+
 package body Geometry is
 
    package N_EF renames Ada.Numerics.Elementary_Functions;
+   package T_IO renames Ada.Text_IO;
 
    function "+" (u, v : Vertex) return Vertex is
    begin
@@ -10,17 +13,17 @@ package body Geometry is
       return (u.x + v.x, u.y + v.y, u.z + v.z, u.w);
    end "+";
 
-   function "*" (k : Float; u : Vertex) return Vertex is
+   function "*" (λ : Float; u : Vertex) return Vertex is
    begin
-      return (k * u.x, k * u.y, k * u.z, u.w);
+      return (λ * u.x, λ * u.y, λ * u.z, u.w);
 
    end "*";
 
-   function "*" (k : Integer; u : Vertex) return Vertex is
-      k_f : constant Float := Float (k);
+   function "*" (λ : Integer; u : Vertex) return Vertex is
+      λ_f : constant Float := Float (λ);
 
    begin
-      return (k_f * u.x, k_f * u.y, k_f * u.z, u.w);
+      return (λ_f * u.x, λ_f * u.y, λ_f * u.z, u.w);
 
    end "*";
 
@@ -34,6 +37,14 @@ package body Geometry is
       return u.x * N.x + u.y * N.y + u.z * N.z;
    end "*";
 
+   procedure Print (v : Vertex) is
+   begin
+
+      Ada.Text_IO.Put_Line
+        (Float'Image (v.x) & " " & Float'Image (v.y) & " " &
+         Float'Image (v.z));
+   end Print;
+
    ----------
    -- norm --
    ----------
@@ -41,13 +52,13 @@ package body Geometry is
    function norm (v : Vertex) return Vertex is
 
       vect_norm : Float;
-      epsilon   : constant Float := 0.001;
+      ε         : constant Float := 0.001;
    begin
 
       vect_norm :=
         N_EF.Sqrt ((v.x / v.w)**2 + (v.y / v.w)**2 + (v.z / v.w)**2);
 
-      if vect_norm <= epsilon then
+      if vect_norm <= ε then
          return (0.0, 0.0, 0.0, 1.0);
       end if;
 
@@ -58,12 +69,12 @@ package body Geometry is
    function norm (v : Normal) return Normal is
 
       vect_norm : Float;
-      epsilon   : constant Float := 0.001;
+      ε         : constant Float := 0.001;
    begin
 
       vect_norm := N_EF.Sqrt (v.x**2 + v.y**2 + v.z**2);
 
-      if vect_norm <= epsilon then
+      if vect_norm <= ε then
          return (0.0, 0.0, 0.0);
       end if;
 

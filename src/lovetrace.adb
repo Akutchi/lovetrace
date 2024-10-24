@@ -19,11 +19,14 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 10.0, 1.0);
+   o : constant G.Vertex := (0.0, 0.0, 400.0, 1.0);
 
    Screen : constant Camera.Screen_Details :=
-     (Demi_Width => 50, Demi_Height => 50, Distance_From_The_Eye => 5,
-      vision     => 10, x => 0, y => 0);
+     (Demi_Width => 200, Demi_Height => 200, Distance_From_The_Eye => 200,
+      vision     => 800, x => 0, y => 0);
+   --  vision can be bettered by taking the farthest
+   --  barycenter + the object width (or smth)
+   --  to adapt to every scene.
 
    cam : Camera.Apparatus := Camera.Create_Apparatus (o, Screen);
 
@@ -44,9 +47,9 @@ begin
    declare
       Data : IIO.Image_Data := Image.Value;
 
-      non_norm_dir, dir : G.Vertex;
-      R                 : Tracing.Ray;
-      Pixel_Color       : Colors.Color;
+      no_norm_dir, dir : G.Vertex;
+      R                : Tracing.Ray;
+      Pixel_Color      : Colors.Color;
 
    begin
 
@@ -56,12 +59,15 @@ begin
             cam.screen.x := X;
             cam.screen.y := Y;
 
-            non_norm_dir :=
+            no_norm_dir :=
               (Float (cam.screen.x), Float (cam.screen.y), Float (cam.n), 1.0);
-            non_norm_dir := G."-" (non_norm_dir, o);
-            dir          := G.norm (non_norm_dir);
+            no_norm_dir := G."-" (no_norm_dir, o);
+            dir         := G.norm (no_norm_dir);
 
-            R := Tracing.Init_Ray (o, dir, Float (cam.n), Float (cam.f));
+            R := Tracing.Init_Ray (o, dir, 0.0, Float (cam.f));
+            --  can be a bit optimized by starting t from screen instead of
+            --  The Eye
+
             Pixel_Color := Tracing.Cast (R, Objs);
 
             Renderer.Put_Pixel (Data, Pixel_Color, cam);

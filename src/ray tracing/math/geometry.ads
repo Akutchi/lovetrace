@@ -9,9 +9,10 @@ package Geometry is
 
    function "+" (u, v : Vertex) return Vertex;
    function "-" (u, v : Vertex) return Vertex;
-   function "*" (k : Float; u : Vertex) return Vertex;
-   function "*" (k : Integer; u : Vertex) return Vertex;
+   function "*" (λ : Float; u : Vertex) return Vertex;
+   function "*" (λ : Integer; u : Vertex) return Vertex;
    function norm (v : Vertex) return Vertex;
+   procedure Print (v : Vertex);
 
    type Texture is record
 

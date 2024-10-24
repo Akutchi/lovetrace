@@ -4,9 +4,10 @@ package body Camera is
      (o : Geometry.Vertex; Screen : Screen_Details) return Apparatus
    is
 
-      f : constant Integer :=
-        Integer (o.z) - Integer (Screen.Distance_From_The_Eye) -
-        Integer (Screen.vision);
+      n : constant Positive :=
+        Integer (o.z) - Integer (Screen.Distance_From_The_Eye);
+
+      f : constant Positive := abs (Integer (o.z) - Integer (Screen.vision));
 
    begin
 

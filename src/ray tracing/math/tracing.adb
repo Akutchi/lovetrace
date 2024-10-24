@@ -1,5 +1,7 @@
 with Ada.Numerics.Generic_Real_Arrays;
 
+with Ada.Text_IO;
+
 package body Tracing is
 
    type Real is digits 2;
@@ -111,9 +113,13 @@ package body Tracing is
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
 
+         ε : constant Float := 0.1;
+
       begin
 
-         if a + b <= 1.0 and then t_min (R) < t and then t_max (R) > t then
+         if a >= 0.0 and then b >= 0.0 and then a + b <= 1.0 + ε
+           and then t_min (R) < t and then t_max (R) > t
+         then
 
             H.Touched_Object := True;
             H.t              := t;

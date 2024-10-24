@@ -13,10 +13,9 @@ package Camera is
 
    type Apparatus is record
 
-      o          : Geometry.Vertex;
-      screen     : Screen_Details;
-      l, r, t, b : Positive;
-      n, f       : Integer;
+      o                : Geometry.Vertex;
+      screen           : Screen_Details;
+      l, r, t, b, n, f : Positive;
 
    end record;
 
