@@ -5,7 +5,7 @@ package Camera is
    type Screen_Details is record
 
       Demi_Width, Demi_Height : Positive;
-      Distance_From_The_Eye   : Positive;  --  z : axis opposed to the scene
+      Distance_From_The_Eye   : Positive;
       vision                  : Positive;
       x, y                    : Integer; --  (0, 0) is at the center
 

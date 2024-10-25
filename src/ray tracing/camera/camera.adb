@@ -8,7 +8,7 @@ package body Camera is
       return Apparatus
    is
 
-      n : constant Positive := Integer (The_Eye.z) - Screen_Distance;
+      n : constant Positive := abs (Integer (The_Eye.z) - Screen_Distance);
       f : constant Positive := abs (Integer (The_Eye.z) - vision);
 
       screen : Screen_Details;
@@ -24,10 +24,10 @@ package body Camera is
          vision                => vision,
          x                     => 0,
          y                     => 0,
-         MIN_X                 => Integer (The_Eye.x) - Demi_Width + 1,
-         MAX_X                 => Integer (The_Eye.x) + Demi_Width - 1,
-         MIN_Y                 => Integer (The_Eye.y) - Demi_Height + 1,
-         MAX_Y                 => Integer (The_Eye.y) + Demi_Height - 1);
+         MIN_X                 => Integer (The_Eye.x) - Demi_Width,
+         MAX_X                 => Integer (The_Eye.x) + Demi_Width,
+         MIN_Y                 => Integer (The_Eye.y) - Demi_Height,
+         MAX_Y                 => Integer (The_Eye.y) + Demi_Height);
 
       cam :=
         (The_Eye,

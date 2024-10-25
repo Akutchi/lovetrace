@@ -4,7 +4,7 @@ with Ada.Text_IO;
 
 package body Tracing is
 
-   type Real is digits 2;
+   type Real is digits 4;
 
    package Lin_Alg is new Ada.Numerics.Generic_Real_Arrays (Real);
    use Lin_Alg;
@@ -17,7 +17,7 @@ package body Tracing is
       R : Ray;
    begin
 
-      R.o := o;
+      R.origin := o;
       R.dir := dir;
       R.t_min := t_min;
       R.t_max := t_max;
@@ -26,24 +26,20 @@ package body Tracing is
 
    end Init_Ray;
 
-   --------------
-   -- Value_At --
-   --------------
+   ---------------------------
+   -- To_Camera_Coordinates --
+   ---------------------------
 
-   function Value_At (R : Ray; t : Float) return Vertex is
+   function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex is
+
+      v_prime : Vertex := v + R.origin;
    begin
 
-      if t < R.t_min then
-         return R.o;
+      v_prime.z := -1.0 * v_prime.z; --  z axis is still in the same direction
 
-      elsif t > R.t_max then
-         return R.o + R.t_max * R.dir;
+      return v_prime;
 
-      end if;
-
-      return R.o + t * R.dir;
-
-   end Value_At;
+   end To_Camera_Coordinates;
 
    -----------
    -- t_min --
@@ -67,10 +63,10 @@ package body Tracing is
    -- origin --
    ------------
 
-   function origin (R : Ray) return Vertex is
+   function origin_point (R : Ray) return Vertex is
    begin
-      return R.o;
-   end origin;
+      return R.origin;
+   end origin_point;
 
    ---------
    -- dir --
@@ -91,11 +87,11 @@ package body Tracing is
       A : constant Vertex := Vs (2);
       B : constant Vertex := Vs (3);
 
-      u_neg : constant Vertex := (-1.0) * dir (R);
+      u_neg : constant Vertex := (-1.0) * R.dir;
 
-      CA : constant Vertex := A - C;
-      CB : constant Vertex := B - C;
-      CO : constant Vertex := origin (R) - C;
+      CA : constant Vertex := R.To_Camera_Coordinates (A - C);
+      CB : constant Vertex := R.To_Camera_Coordinates (B - C);
+      CO : constant Vertex := (-1.0) * R.To_Camera_Coordinates (C);
 
       M : constant Real_Matrix :=
         ((Real (CA.x), Real (CB.x), Real (u_neg.x)),
@@ -112,14 +108,15 @@ package body Tracing is
          a : constant Float := Float (Sol (Sol'First));
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
+         ε : constant Float := 0.05;
 
       begin
 
          if a >= 0.0
            and then b >= 0.0
-           and then a + b <= 1.0
-           and then t_min (R) < t
-           and then t_max (R) > t
+           and then a + b <= 1.0 - ε
+           and then t > R.t_min
+           and then t < R.t_max
          then
 
             H.Touched_Object := True;
@@ -130,8 +127,7 @@ package body Tracing is
 
    exception
       when Constraint_Error =>
-         Ada.Text_IO.Put_Line ("No Solutions !");
-         H.t := t_max (R); --  When M is non-invertible
+         H.t := H.NO_INTERSECTION; --  When M is non-invertible, no solutions
 
    end Intersect;
 
@@ -143,7 +139,7 @@ package body Tracing is
 
       H         : Hit;
       Vs        : constant V_List.Vector := Objs.Vertex_List;
-      current_t : Float := t_max (R);
+      current_t : Float := R.t_max;
 
    begin
 
@@ -167,13 +163,9 @@ package body Tracing is
             end if;
          end;
 
-         Ada.Text_IO.Put_Line (Float'Image (current_t));
-
       end loop;
 
-      Ada.Text_IO.Put_Line ("---");
-
-      if current_t /= t_max (R) then
+      if current_t /= H.NO_INTERSECTION then
 
          return RED;
 

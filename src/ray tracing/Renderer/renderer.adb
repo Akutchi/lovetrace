@@ -51,11 +51,11 @@ package body Renderer is
      (Data : in out IIO.Image_Data; C : Color; cam : Camera.Apparatus)
    is
 
-      X : constant Natural := cam.l - Integer (cam.origin.x) + cam.screen.x;
-      Y : constant Natural := cam.t + Integer (cam.origin.y) - cam.screen.y;
+      X : constant Natural := cam.screen.x - cam.screen.MIN_X;
+      Y : constant Natural := -cam.screen.y + cam.screen.MAX_Y;
    begin
 
-      Data (Y, X) := Color_To_Color_Info (C);
+      Data (X, Y) := Color_To_Color_Info (C);
 
    end Put_Pixel;
 
