@@ -99,7 +99,6 @@ package body Tracing is
          (Real (CA.z), Real (CB.z), Real (u_neg.z)));
 
       Y : constant Real_Vector := (Real (CO.x), Real (CO.y), Real (CO.z));
-
    begin
 
       declare
@@ -148,8 +147,7 @@ package body Tracing is
       for F of Objs.Faces_List loop
 
          declare
-            Indices : constant Indices_List := F.Vertices_Indices;
-
+            Indices       : constant Indices_List := F.Vertices_Indices;
             Face_Vertices : V_List.Vector;
 
          begin

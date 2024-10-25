@@ -1,5 +1,8 @@
 with Ada.Strings;
 with Ada.Strings.Fixed;
+with Ada.Containers; use Ada.Containers;
+
+with Ada.Text_IO;
 
 package body ObjLoader_Utils is
 
@@ -21,8 +24,7 @@ package body ObjLoader_Utils is
    ---------------------------------
 
    function UnboundedString_To_Positive
-     (su : S_U.Unbounded_String) return Positive
-   is
+     (su : S_U.Unbounded_String) return Positive is
    begin
       return Positive'Value (S_U.To_String (su));
    end UnboundedString_To_Positive;
@@ -70,6 +72,15 @@ package body ObjLoader_Utils is
    begin
 
       Token_List := Tokenize_Line (Line, Whitespace);
+
+      if Line_Components.Length (Token_List) = 4 then
+         return
+           (UnboundedString_To_Float (Token_List (1)),
+            UnboundedString_To_Float (Token_List (2)),
+            UnboundedString_To_Float (Token_List (3)),
+            1.0);
+      end if;
+
       return
         (UnboundedString_To_Float (Token_List (1)),
          UnboundedString_To_Float (Token_List (2)),
@@ -105,7 +116,7 @@ package body ObjLoader_Utils is
       Normal_Vect : Geometry.Normal;
    begin
 
-      Token_List  := Tokenize_Line (Line, Whitespace);
+      Token_List := Tokenize_Line (Line, Whitespace);
       Normal_Vect :=
         (UnboundedString_To_Float (Token_List (1)),
          UnboundedString_To_Float (Token_List (2)),
@@ -122,6 +133,7 @@ package body ObjLoader_Utils is
    function Format_To_Face (Line : String) return Geometry.Face is
 
       Token_List, Tmp_List : Line_Components.Vector;
+      Result               : Positive;
 
       Vertices, Textures, Normals : Geometry.Indices_List;
 
@@ -138,8 +150,20 @@ package body ObjLoader_Utils is
             Tmp_List := Tokenize_Line (S_U.To_String (E), Slash);
 
             Vertices (I) := UnboundedString_To_Positive (Tmp_List (0));
-            Textures (I) := UnboundedString_To_Positive (Tmp_List (1));
-            Normals (I)  := UnboundedString_To_Positive (Tmp_List (2));
+
+            if Line_Components.Length (Tmp_List) = 2 then
+               --  f 1//1
+
+               Textures (I) := 1;
+               Normals (I) := UnboundedString_To_Positive (Tmp_List (1));
+
+            else
+               --  f 1/2/3
+
+               Textures (I) := UnboundedString_To_Positive (Tmp_List (1));
+               Normals (I) := UnboundedString_To_Positive (Tmp_List (2));
+
+            end if;
 
             I := I + 1;
 

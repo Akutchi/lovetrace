@@ -1,3 +1,5 @@
+with Ada.Text_IO;
+
 with Image_IO;
 with Image_IO.Holders;
 with Image_IO.Operations;
@@ -19,15 +21,15 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 10.0, 1.0);
+   o : constant G.Vertex := (0.0, 0.0, 1.0, 1.0);
 
    cam : Camera.Apparatus :=
      Camera.Create_Apparatus
        (The_Eye         => o,
-        Screen_Distance => 5,
+        Screen_Distance => 1,
         Demi_Width      => 50,
         Demi_Height     => 50,
-        vision          => 25);
+        Vision          => 20);
    --  vision can be bettered by taking the farthest
    --  barycenter + the object width (or smth)
    --  to adapt to every scene.
@@ -36,7 +38,10 @@ procedure Lovetrace is
 
 begin
 
-   ObjLoader.Loader ("../scenes/triangle.obj", Objs);
+   Ada.Text_IO.Put_Line ("Loading Object...");
+   ObjLoader.Loader ("../scenes/monkey.obj", Objs);
+   Ada.Text_IO.Put_Line ("Object loaded !");
+
    Renderer.Create_Image ("../scenes_image/res.png", cam);
    IIO_O.Read ("../scenes_image/res.png", Image);
 
@@ -48,6 +53,8 @@ begin
       Pixel_Color     : Colors.Color;
 
    begin
+
+      Ada.Text_IO.Put_Line ("Rendering...");
 
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
          for Y in reverse cam.screen.MIN_Y + 1 .. cam.screen.MAX_Y loop

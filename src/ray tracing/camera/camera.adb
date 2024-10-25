@@ -4,12 +4,12 @@ package body Camera is
 
    function Create_Apparatus
      (The_Eye                                          : Geometry.Vertex;
-      Screen_Distance, Demi_Width, Demi_Height, vision : Integer)
+      Screen_Distance, Demi_Width, Demi_Height, Vision : Integer)
       return Apparatus
    is
 
-      n : constant Positive := abs (Integer (The_Eye.z) - Screen_Distance);
-      f : constant Positive := abs (Integer (The_Eye.z) - vision);
+      n : constant Positive := Screen_Distance;
+      f : constant Positive := Vision;
 
       screen : Screen_Details;
       cam    : Apparatus;
@@ -20,7 +20,7 @@ package body Camera is
         (Demi_Width            => Demi_Width,
          Demi_Height           => Demi_Height,
          Distance_From_The_Eye => Screen_Distance,
-         vision                => vision,
+         vision                => Vision,
          x                     => 0,
          y                     => 0,
          MIN_X                 => Integer (The_Eye.x) - Demi_Width,

@@ -23,7 +23,7 @@ package Camera is
 
    function Create_Apparatus
      (The_Eye                                          : Geometry.Vertex;
-      Screen_Distance, Demi_Width, Demi_Height, vision : Integer)
+      Screen_Distance, Demi_Width, Demi_Height, Vision : Integer)
       return Apparatus;
 
 end Camera;

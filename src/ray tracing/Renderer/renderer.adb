@@ -55,7 +55,7 @@ package body Renderer is
       Y : constant Natural := -cam.screen.y + cam.screen.MAX_Y;
    begin
 
-      Data (X, Y) := Color_To_Color_Info (C);
+      Data (Y, X) := Color_To_Color_Info (C);
 
    end Put_Pixel;
 
