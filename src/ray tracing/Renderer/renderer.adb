@@ -1,3 +1,5 @@
+with Ada.Text_IO;
+
 package body Renderer is
 
    --------------------
@@ -19,9 +21,9 @@ package body Renderer is
 
    begin
 
-      Color_I.Red   := Float_To_UInt8 (C.Red);
+      Color_I.Red := Float_To_UInt8 (C.Red);
       Color_I.Green := Float_To_UInt8 (C.Green);
-      Color_I.Blue  := Float_To_UInt8 (C.Blue);
+      Color_I.Blue := Float_To_UInt8 (C.Blue);
 
       return Color_I;
 
@@ -49,11 +51,11 @@ package body Renderer is
      (Data : in out IIO.Image_Data; C : Color; cam : Camera.Apparatus)
    is
 
-      X : constant Natural := cam.screen.x + cam.l;
-      Y : constant Natural := cam.screen.y + cam.t;
+      X : constant Natural := cam.l - Integer (cam.origin.x) + cam.screen.x;
+      Y : constant Natural := cam.t + Integer (cam.origin.y) - cam.screen.y;
    begin
 
-      Data (X, Y) := Color_To_Color_Info (C);
+      Data (Y, X) := Color_To_Color_Info (C);
 
    end Put_Pixel;
 

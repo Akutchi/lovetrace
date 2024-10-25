@@ -19,22 +19,18 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 400.0, 1.0);
+   o : constant G.Vertex := (0.0, 0.0, 10.0, 1.0);
 
-   Screen : constant Camera.Screen_Details :=
-     (Demi_Width => 200, Demi_Height => 200, Distance_From_The_Eye => 200,
-      vision     => 800, x => 0, y => 0);
+   cam : Camera.Apparatus :=
+     Camera.Create_Apparatus
+       (The_Eye         => o,
+        Screen_Distance => 5,
+        Demi_Width      => 50,
+        Demi_Height     => 50,
+        vision          => 800);
    --  vision can be bettered by taking the farthest
    --  barycenter + the object width (or smth)
    --  to adapt to every scene.
-
-   cam : Camera.Apparatus := Camera.Create_Apparatus (o, Screen);
-
-   MIN_X : constant Integer := Integer (o.x) - Integer (cam.l);
-   MAX_X : constant Integer := Integer (o.x) + Integer (cam.r) - 1;
-
-   MIN_Y : constant Integer := Integer (o.y) - Integer (cam.b);
-   MAX_Y : constant Integer := Integer (o.y) + Integer (cam.t) - 1;
 
    Image : IIO_H.Handle;
 
@@ -53,8 +49,8 @@ begin
 
    begin
 
-      for X in MIN_X .. MAX_X loop
-         for Y in MIN_Y .. MAX_Y loop
+      for X in cam.screen.MIN_X .. cam.screen.MAX_X loop
+         for Y in cam.screen.MIN_Y .. cam.screen.MAX_Y loop
 
             cam.screen.x := X;
             cam.screen.y := Y;
@@ -62,7 +58,7 @@ begin
             no_norm_dir :=
               (Float (cam.screen.x), Float (cam.screen.y), Float (cam.n), 1.0);
             no_norm_dir := G."-" (no_norm_dir, o);
-            dir         := G.norm (no_norm_dir);
+            dir := G.norm (no_norm_dir);
 
             R := Tracing.Init_Ray (o, dir, 0.0, Float (cam.f));
             --  can be a bit optimized by starting t from screen instead of

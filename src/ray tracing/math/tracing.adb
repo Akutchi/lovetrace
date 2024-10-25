@@ -17,8 +17,8 @@ package body Tracing is
       R : Ray;
    begin
 
-      R.o     := o;
-      R.dir   := dir;
+      R.o := o;
+      R.dir := dir;
       R.t_min := t_min;
       R.t_max := t_max;
 
@@ -113,22 +113,24 @@ package body Tracing is
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
 
-         ε : constant Float := 0.1;
-
       begin
 
-         if a >= 0.0 and then b >= 0.0 and then a + b <= 1.0 + ε
-           and then t_min (R) < t and then t_max (R) > t
+         if a >= 0.0
+           and then b >= 0.0
+           and then a + b <= 1.0
+           and then t_min (R) < t
+           and then t_max (R) > t
          then
 
             H.Touched_Object := True;
-            H.t              := t;
+            H.t := t;
 
          end if;
       end;
 
    exception
       when Constraint_Error =>
+         Ada.Text_IO.Put_Line ("No Solutions !");
          H.t := t_max (R); --  When M is non-invertible
 
    end Intersect;
@@ -141,7 +143,7 @@ package body Tracing is
 
       H         : Hit;
       Vs        : constant V_List.Vector := Objs.Vertex_List;
-      current_t : Float                  := t_max (R);
+      current_t : Float := t_max (R);
 
    begin
 
@@ -165,13 +167,19 @@ package body Tracing is
             end if;
          end;
 
+         Ada.Text_IO.Put_Line (Float'Image (current_t));
+
       end loop;
 
+      Ada.Text_IO.Put_Line ("---");
+
       if current_t /= t_max (R) then
+
          return RED;
+
       end if;
 
-      return BLACK;
+      return DARKER_RED;
 
    end Cast;
 
