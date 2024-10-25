@@ -1,5 +1,3 @@
-with Ada.Text_IO;
-
 package body Tracing is
 
    --------------
@@ -51,13 +49,9 @@ package body Tracing is
    ---------------------------
 
    function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex is
-
-      v_prime : Vertex := v + R.origin;
    begin
 
-      v_prime.z := -1.0 * v_prime.z; --  z axis is still in the same direction
-
-      return v_prime;
+      return v - R.origin;
 
    end To_Camera_Coordinates;
 

@@ -1,15 +1,13 @@
-with Ada.Text_IO;
-
 package body Camera is
 
    function Create_Apparatus
-     (The_Eye                                          : Geometry.Vertex;
-      Screen_Distance, Demi_Width, Demi_Height, Vision : Integer)
-      return Apparatus
+     (The_Eye                 : Geometry.Vertex;
+      Screen_Distance, Vision : Float;
+      Demi_Width, Demi_Height : Integer) return Apparatus
    is
 
-      n : constant Positive := Screen_Distance;
-      f : constant Positive := Vision;
+      n : constant Float := Screen_Distance;
+      f : constant Float := Vision;
 
       screen : Screen_Details;
       cam    : Apparatus;

@@ -40,10 +40,22 @@ package body Geometry is
    procedure Print (v : Vertex) is
    begin
 
-      Ada.Text_IO.Put_Line
-        (Float'Image (v.x) & " " & Float'Image (v.y) & " " &
-         Float'Image (v.z));
+      T_IO.Put_Line
+        (Float'Image (v.x)
+         & " "
+         & Float'Image (v.y)
+         & " "
+         & Float'Image (v.z));
    end Print;
+
+   -----------
+   -- Scale --
+   -----------
+
+   function Scale (s, u : Vertex) return Vertex is
+   begin
+      return (s.x * u.x, s.y * u.y, s.z * u.z, u.w);
+   end Scale;
 
    ----------
    -- norm --
@@ -56,7 +68,7 @@ package body Geometry is
    begin
 
       vect_norm :=
-        N_EF.Sqrt ((v.x / v.w)**2 + (v.y / v.w)**2 + (v.z / v.w)**2);
+        N_EF.Sqrt ((v.x / v.w) ** 2 + (v.y / v.w) ** 2 + (v.z / v.w) ** 2);
 
       if vect_norm <= ε then
          return (0.0, 0.0, 0.0, 1.0);
@@ -72,7 +84,7 @@ package body Geometry is
       ε         : constant Float := 0.001;
    begin
 
-      vect_norm := N_EF.Sqrt (v.x**2 + v.y**2 + v.z**2);
+      vect_norm := N_EF.Sqrt (v.x ** 2 + v.y ** 2 + v.z ** 2);
 
       if vect_norm <= ε then
          return (0.0, 0.0, 0.0);

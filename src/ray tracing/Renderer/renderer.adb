@@ -1,5 +1,3 @@
-with Ada.Text_IO;
-
 package body Renderer is
 
    --------------------

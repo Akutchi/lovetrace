@@ -1,5 +1,3 @@
-with Ada.Text_IO;
-
 with Image_IO;
 with Image_IO.Holders;
 with Image_IO.Operations;
@@ -21,15 +19,15 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 1.0, 1.0);
+   o : constant G.Vertex := (0.0, 5.0, 5.0, 1.0);
 
    cam : Camera.Apparatus :=
      Camera.Create_Apparatus
        (The_Eye         => o,
-        Screen_Distance => 1,
-        Demi_Width      => 50,
-        Demi_Height     => 50,
-        Vision          => 20);
+        Screen_Distance => 5.0,
+        Vision          => 100.0,
+        Demi_Width      => 200,
+        Demi_Height     => 200);
    --  vision can be bettered by taking the farthest
    --  barycenter + the object width (or smth)
    --  to adapt to every scene.
@@ -38,9 +36,8 @@ procedure Lovetrace is
 
 begin
 
-   Ada.Text_IO.Put_Line ("Loading Object...");
-   ObjLoader.Loader ("../scenes/monkey.obj", Objs);
-   Ada.Text_IO.Put_Line ("Object loaded !");
+   Objs.Scale := (100.0, 100.0, 1.0, 1.0);
+   ObjLoader.Loader ("../scenes/triangle.obj", Objs);
 
    Renderer.Create_Image ("../scenes_image/res.png", cam);
    IIO_O.Read ("../scenes_image/res.png", Image);
@@ -54,17 +51,13 @@ begin
 
    begin
 
-      Ada.Text_IO.Put_Line ("Rendering...");
-
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
          for Y in reverse cam.screen.MIN_Y + 1 .. cam.screen.MAX_Y loop
 
-            unnorm_dir := (Float (X), Float (Y), Float (-cam.n), 1.0);
+            unnorm_dir := (Float (X), Float (Y), -cam.n, 1.0);
             dir := G.norm (unnorm_dir);
 
-            R :=
-              Tracing.Init_Ray
-                (o, dir, t_min => Float (cam.n), t_max => Float (cam.f));
+            R := Tracing.Init_Ray (o, dir, t_min => cam.n, t_max => cam.f);
             Pixel_Color := R.Cast (Objs);
 
             cam.screen.x := X;

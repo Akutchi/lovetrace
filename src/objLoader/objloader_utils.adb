@@ -2,8 +2,6 @@ with Ada.Strings;
 with Ada.Strings.Fixed;
 with Ada.Containers; use Ada.Containers;
 
-with Ada.Text_IO;
-
 package body ObjLoader_Utils is
 
    package S renames Ada.Strings;
@@ -133,7 +131,6 @@ package body ObjLoader_Utils is
    function Format_To_Face (Line : String) return Geometry.Face is
 
       Token_List, Tmp_List : Line_Components.Vector;
-      Result               : Positive;
 
       Vertices, Textures, Normals : Geometry.Indices_List;
 

@@ -11,6 +11,8 @@ package Geometry is
    function "-" (u, v : Vertex) return Vertex;
    function "*" (λ : Float; u : Vertex) return Vertex;
    function "*" (λ : Integer; u : Vertex) return Vertex;
+
+   function Scale (s, u : Vertex) return Vertex;
    function norm (v : Vertex) return Vertex;
    procedure Print (v : Vertex);
 
@@ -37,16 +39,28 @@ package Geometry is
 
    end record;
 
-   package V_List is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Positive, Element_Type => Vertex, "=" => "=");
+   package V_List is new
+     Ada.Containers.Indefinite_Vectors
+       (Index_Type   => Positive,
+        Element_Type => Vertex,
+        "="          => "=");
 
-   package T_List is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Positive, Element_Type => Texture, "=" => "=");
+   package T_List is new
+     Ada.Containers.Indefinite_Vectors
+       (Index_Type   => Positive,
+        Element_Type => Texture,
+        "="          => "=");
 
-   package N_List is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Positive, Element_Type => Normal, "=" => "=");
+   package N_List is new
+     Ada.Containers.Indefinite_Vectors
+       (Index_Type   => Positive,
+        Element_Type => Normal,
+        "="          => "=");
 
-   package F_List is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Positive, Element_Type => Face, "=" => "=");
+   package F_List is new
+     Ada.Containers.Indefinite_Vectors
+       (Index_Type   => Positive,
+        Element_Type => Face,
+        "="          => "=");
 
 end Geometry;

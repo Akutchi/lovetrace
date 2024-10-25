@@ -36,7 +36,8 @@ package body ObjLoader is
 
                if Is_Type (VERTEX, Line) then
                   Geometry.V_List.Append
-                    (Objs.Vertex_List, Format_To_Vertex (Line));
+                    (Objs.Vertex_List,
+                     Geometry.Scale (Objs.Scale, Format_To_Vertex (Line)));
 
                elsif Is_Type (TEXTURE, Line) then
                   Geometry.T_List.Append
