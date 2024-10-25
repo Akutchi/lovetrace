@@ -2,16 +2,6 @@ with Geometry;
 
 package Camera is
 
-   --  for some reason, the world axis are like so,
-   --
-   --                        |\
-   --               x        | \
-   --            y  |        |  \
-   --             \ |        \   |
-   --         z____\|         \  |
-   --                          \ |
-   --                           \| <= screen
-
    type Screen_Details is record
 
       Demi_Width, Demi_Height : Positive;
