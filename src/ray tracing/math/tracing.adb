@@ -1,13 +1,6 @@
-with Ada.Numerics.Generic_Real_Arrays;
-
 with Ada.Text_IO;
 
 package body Tracing is
-
-   type Real is digits 4;
-
-   package Lin_Alg is new Ada.Numerics.Generic_Real_Arrays (Real);
-   use Lin_Alg;
 
    --------------
    -- Init_Ray --
@@ -25,21 +18,6 @@ package body Tracing is
       return R;
 
    end Init_Ray;
-
-   ---------------------------
-   -- To_Camera_Coordinates --
-   ---------------------------
-
-   function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex is
-
-      v_prime : Vertex := v + R.origin;
-   begin
-
-      v_prime.z := -1.0 * v_prime.z; --  z axis is still in the same direction
-
-      return v_prime;
-
-   end To_Camera_Coordinates;
 
    -----------
    -- t_min --
@@ -59,15 +37,6 @@ package body Tracing is
       return R.t_max;
    end t_max;
 
-   ------------
-   -- origin --
-   ------------
-
-   function origin_point (R : Ray) return Vertex is
-   begin
-      return R.origin;
-   end origin_point;
-
    ---------
    -- dir --
    ---------
@@ -76,6 +45,37 @@ package body Tracing is
    begin
       return R.dir;
    end dir;
+
+   ---------------------------
+   -- To_Camera_Coordinates --
+   ---------------------------
+
+   function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex is
+
+      v_prime : Vertex := v + R.origin;
+   begin
+
+      v_prime.z := -1.0 * v_prime.z; --  z axis is still in the same direction
+
+      return v_prime;
+
+   end To_Camera_Coordinates;
+
+   function To_Camera_Coordinates (R : Ray; v : Real_Vector) return Real_Vector
+   is
+
+      v_prime : Real_Vector := v;
+   begin
+
+      v_prime (v_prime'First) := v_prime (v_prime'First) + Real (R.origin.x);
+      v_prime (v_prime'First + 1) :=
+        v_prime (v_prime'First + 1) + Real (R.origin.y);
+      v_prime (v_prime'First + 2) :=
+        -(v_prime (v_prime'First + 2) + Real (R.origin.z));
+
+      return v_prime;
+
+   end To_Camera_Coordinates;
 
    ---------------
    -- Intersect --
@@ -98,7 +98,8 @@ package body Tracing is
          (Real (CA.y), Real (CB.y), Real (u_neg.y)),
          (Real (CA.z), Real (CB.z), Real (u_neg.z)));
 
-      Y : constant Real_Vector := (Real (CO.x), Real (CO.y), Real (CO.z));
+      Y : constant Real_Vector :=
+        R.To_Camera_Coordinates ((Real (CO.x), Real (CO.y), Real (CO.z)));
    begin
 
       declare
@@ -123,6 +124,7 @@ package body Tracing is
             H.t := t;
 
          end if;
+
       end;
 
    exception
@@ -160,6 +162,7 @@ package body Tracing is
 
             if H.t < current_t then
                current_t := H.t;
+
             end if;
          end;
 

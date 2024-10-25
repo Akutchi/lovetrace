@@ -36,7 +36,7 @@ procedure Lovetrace is
 
 begin
 
-   ObjLoader.Loader ("../scenes/triangle.obj", Objs);
+   ObjLoader.Loader ("../scenes/sphere.obj", Objs);
    Renderer.Create_Image ("../scenes_image/res.png", cam);
    IIO_O.Read ("../scenes_image/res.png", Image);
 
@@ -58,8 +58,7 @@ begin
             R :=
               Tracing.Init_Ray
                 (o, dir, t_min => Float (cam.n), t_max => Float (cam.f));
-
-            Pixel_Color := Tracing.Cast (R, Objs);
+            Pixel_Color := R.Cast (Objs);
 
             cam.screen.x := X;
             cam.screen.y := Y;
