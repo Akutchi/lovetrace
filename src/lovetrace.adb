@@ -25,9 +25,9 @@ procedure Lovetrace is
      Camera.Create_Apparatus
        (The_Eye         => o,
         Screen_Distance => 5,
-        Demi_Width      => 100,
-        Demi_Height     => 100,
-        vision          => 20);
+        Demi_Width      => 50,
+        Demi_Height     => 50,
+        vision          => 25);
    --  vision can be bettered by taking the farthest
    --  barycenter + the object width (or smth)
    --  to adapt to every scene.
@@ -36,7 +36,7 @@ procedure Lovetrace is
 
 begin
 
-   ObjLoader.Loader ("../scenes/sphere.obj", Objs);
+   ObjLoader.Loader ("../scenes/triangle.obj", Objs);
    Renderer.Create_Image ("../scenes_image/res.png", cam);
    IIO_O.Read ("../scenes_image/res.png", Image);
 

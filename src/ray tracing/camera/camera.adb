@@ -16,7 +16,6 @@ package body Camera is
 
    begin
 
-      --  +- 1 are here to not Index_Range when rendering
       screen :=
         (Demi_Width            => Demi_Width,
          Demi_Height           => Demi_Height,

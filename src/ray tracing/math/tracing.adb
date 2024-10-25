@@ -83,23 +83,23 @@ package body Tracing is
 
    procedure Intersect (Vs : V_List.Vector; R : Ray; H : in out Hit) is
 
-      C : constant Vertex := Vs (1);
-      A : constant Vertex := Vs (2);
-      B : constant Vertex := Vs (3);
+      C : constant Vertex := R.To_Camera_Coordinates (Vs (1));
+      A : constant Vertex := R.To_Camera_Coordinates (Vs (2));
+      B : constant Vertex := R.To_Camera_Coordinates (Vs (3));
 
       u_neg : constant Vertex := (-1.0) * R.dir;
 
-      CA : constant Vertex := R.To_Camera_Coordinates (A - C);
-      CB : constant Vertex := R.To_Camera_Coordinates (B - C);
-      CO : constant Vertex := (-1.0) * R.To_Camera_Coordinates (C);
+      CA : constant Vertex := A - C;
+      CB : constant Vertex := B - C;
+      CO : constant Vertex := (-1.0) * C;
 
       M : constant Real_Matrix :=
         ((Real (CA.x), Real (CB.x), Real (u_neg.x)),
          (Real (CA.y), Real (CB.y), Real (u_neg.y)),
          (Real (CA.z), Real (CB.z), Real (u_neg.z)));
 
-      Y : constant Real_Vector :=
-        R.To_Camera_Coordinates ((Real (CO.x), Real (CO.y), Real (CO.z)));
+      Y : constant Real_Vector := (Real (CO.x), Real (CO.y), Real (CO.z));
+
    begin
 
       declare
@@ -109,7 +109,7 @@ package body Tracing is
          a : constant Float := Float (Sol (Sol'First));
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
-         ε : constant Float := 0.05;
+         ε : constant Float := 0.01;
 
       begin
 
@@ -174,7 +174,7 @@ package body Tracing is
 
       end if;
 
-      return DARKER_RED;
+      return BLACK;
 
    end Cast;
 
