@@ -27,6 +27,10 @@ package body Renderer is
 
    end Color_To_Color_Info;
 
+   ------------------
+   -- Create_Image --
+   ------------------
+
    procedure Create_Image (File_Name : String; cam : Camera.Apparatus) is
 
       Image  : IIO_H.Handle;
@@ -44,6 +48,10 @@ package body Renderer is
       end;
 
    end Create_Image;
+
+   ---------------
+   -- Put_Pixel --
+   ---------------
 
    procedure Put_Pixel
      (Data : in out IIO.Image_Data; C : Color; cam : Camera.Apparatus)

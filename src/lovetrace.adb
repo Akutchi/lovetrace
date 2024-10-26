@@ -59,7 +59,7 @@ begin
             unnorm_dir := (Float (X), Float (Y), -cam.n, 1.0);
             dir := G.norm (unnorm_dir);
 
-            R := Tracing.Init_Ray (cam, dir, t_min => cam.n, t_max => cam.f);
+            R := Tracing.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
             Pixel_Color := R.Cast (Objs);
 
             cam.screen.x := X;

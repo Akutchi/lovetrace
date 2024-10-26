@@ -25,8 +25,6 @@ package Tracing is
    function Ray_Direction (R : Ray) return Vertex;
 
    function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex;
-   function To_Camera_Coordinates
-     (R : Ray; v : Real_Vector) return Real_Vector;
 
    function Cast (R : Ray; Objs : ObjLoader.Scene) return Color;
 

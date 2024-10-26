@@ -1,3 +1,5 @@
+with Ada.Text_IO;
+
 package body Tracing is
 
    --------------
@@ -59,23 +61,6 @@ package body Tracing is
 
    end To_Camera_Coordinates;
 
-   function To_Camera_Coordinates (R : Ray; v : Real_Vector) return Real_Vector
-   is
-
-      v_prime : Real_Vector := v;
-   begin
-
-      v_prime (v_prime'First) :=
-        v_prime (v_prime'First) + Real (R.cam.origin.x);
-      v_prime (v_prime'First + 1) :=
-        v_prime (v_prime'First + 1) + Real (R.cam.origin.y);
-      v_prime (v_prime'First + 2) :=
-        -(v_prime (v_prime'First + 2) + Real (R.cam.origin.z));
-
-      return v_prime;
-
-   end To_Camera_Coordinates;
-
    ---------------
    -- Intersect --
    ---------------
@@ -107,7 +92,7 @@ package body Tracing is
          a : constant Float := Float (Sol (Sol'First));
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
-         ε : constant Float := 0.0;
+         ε : constant Float := 0.01;
 
       begin
 
