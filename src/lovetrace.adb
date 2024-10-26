@@ -19,7 +19,7 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 8.5, 1.0);
+   o : constant G.Vertex := (0.0, 0.0, 5.0, 1.0);
 
    cam : Camera.Apparatus :=
      Camera.Create_Apparatus
@@ -31,7 +31,7 @@ procedure Lovetrace is
         Demi_Width      => 200,
         Demi_Height     => 200);
    --  vision can be bettered by taking the farthest
-   --  barycenter + the object width (or smth)
+   --  barycenter + the object width or smth
    --  to adapt to every scene.
 
    Image : IIO_H.Handle;
@@ -46,8 +46,8 @@ begin
    declare
       Data : IIO.Image_Data := Image.Value;
 
-      unnorm_dir, dir : G.Vertex; --  in eye coordinates (at the origin)
-      R               : Tracing.Ray;
+      unnorm_dir, dir : G.Vertex; --  in eye coordinates, at the new origin
+      Ray             : Tracing.Ray;
       Pixel_Color     : Colors.Color;
 
    begin
@@ -63,8 +63,8 @@ begin
 
             dir := G.Norm (unnorm_dir);
 
-            R := Tracing.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
-            Pixel_Color := R.Cast (Objs);
+            Ray := Tracing.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
+            Pixel_Color := Ray.Cast (Objs);
 
             cam.screen.x := X;
             cam.screen.y := Y;

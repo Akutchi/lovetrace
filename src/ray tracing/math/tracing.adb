@@ -152,11 +152,11 @@ package body Tracing is
 
       if current_t /= H.NO_INTERSECTION then
 
-         return RED;
+         return Choose ("red");
 
       end if;
 
-      return BLACK;
+      return Choose ("black");
 
    end Cast;
 
