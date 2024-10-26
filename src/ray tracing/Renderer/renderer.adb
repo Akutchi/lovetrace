@@ -44,7 +44,7 @@ package body Renderer is
       declare
          Data : constant IIO.Image_Data := Image.Value;
       begin
-         IIO_O.Write_PNG (Image_Destination & File_Name, Data);
+         IIO_O.Write_PNG (File_Name, Data);
       end;
 
    end Create_Image;
