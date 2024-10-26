@@ -9,11 +9,19 @@ package body Geometry is
    package N_EF renames Ada.Numerics.Elementary_Functions;
    package T_IO renames Ada.Text_IO;
 
+   -------
+   -- + --
+   -------
+
    function "+" (u, v : Vertex) return Vertex is
    begin
 
       return (u.x + v.x, u.y + v.y, u.z + v.z, u.w);
    end "+";
+
+   -------
+   -- * --
+   -------
 
    function "*" (λ : Float; u : Vertex) return Vertex is
    begin
@@ -29,15 +37,19 @@ package body Geometry is
 
    end "*";
 
-   function "-" (u, v : Vertex) return Vertex is
-   begin
-      return u + (Geometry."*" (-1, v));
-   end "-";
-
    function "*" (u : Vertex; N : Normal) return Float is
    begin
       return u.x * N.x + u.y * N.y + u.z * N.z;
    end "*";
+
+   -------
+   -- - --
+   -------
+
+   function "-" (u, v : Vertex) return Vertex is
+   begin
+      return u + (Geometry."*" (-1, v));
+   end "-";
 
    ----------
    -- Norm --
@@ -76,9 +88,9 @@ package body Geometry is
 
    end Norm;
 
-   ----------
-   -- Turn --
-   ----------
+   ------------
+   -- Rotate --
+   ------------
 
    function Rotate (v : Vertex; axis : Character; α : Float) return Vertex is
 
@@ -131,6 +143,15 @@ package body Geometry is
    -----------
 
    procedure Print (v : Vertex) is
+
+      Format : Formatted_String := +"(%2.f, %2.f, %2.f)";
+   begin
+
+      Format := Format & v.x & v.y & v.z;
+      T_IO.Put_Line (-Format);
+   end Print;
+
+   procedure Print (v : Normal) is
 
       Format : Formatted_String := +"(%2.f, %2.f, %2.f)";
    begin

@@ -12,19 +12,12 @@ package Geometry is
    package Functions is new Ada.Numerics.Generic_Elementary_Functions (Real);
    use Functions;
 
+   type Indices_List is array (Positive range 1 .. 3) of Positive;
+
    type Vertex is record
 
       x, y, z, w : Float;
    end record;
-
-   function "+" (u, v : Vertex) return Vertex;
-   function "-" (u, v : Vertex) return Vertex;
-   function "*" (λ : Float; u : Vertex) return Vertex;
-   function "*" (λ : Integer; u : Vertex) return Vertex;
-
-   function Norm (v : Vertex) return Vertex;
-   function Rotate (v : Vertex; axis : Character; α : Float) return Vertex;
-   procedure Print (v : Vertex);
 
    type Texture is record
 
@@ -35,11 +28,6 @@ package Geometry is
 
       x, y, z : Float;
    end record;
-
-   function "*" (u : Vertex; N : Normal) return Float;
-   function Norm (v : Normal) return Normal;
-
-   type Indices_List is array (Positive range 1 .. 3) of Positive;
 
    type Face is record
 
@@ -72,5 +60,21 @@ package Geometry is
        (Index_Type   => Positive,
         Element_Type => Face,
         "="          => "=");
+
+   function "+" (u, v : Vertex) return Vertex;
+
+   function "*" (λ : Float; u : Vertex) return Vertex;
+   function "*" (λ : Integer; u : Vertex) return Vertex;
+   function "*" (u : Vertex; N : Normal) return Float;
+
+   function "-" (u, v : Vertex) return Vertex;
+
+   function Norm (v : Vertex) return Vertex;
+   function Norm (v : Normal) return Normal;
+
+   function Rotate (v : Vertex; axis : Character; α : Float) return Vertex;
+
+   procedure Print (v : Vertex);
+   procedure Print (v : Normal);
 
 end Geometry;
