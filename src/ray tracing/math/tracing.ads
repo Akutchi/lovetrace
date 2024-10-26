@@ -1,6 +1,7 @@
 with Ada.Numerics.Generic_Real_Arrays;
 
 with ObjLoader;
+with Camera;
 
 with Geometry; use Geometry;
 with Colors;   use Colors;
@@ -14,13 +15,14 @@ package Tracing is
 
    type Ray is tagged private;
 
-   function Init_Ray (o, dir : Vertex; t_min, t_max : Float) return Ray;
+   function Init_Ray
+     (cam : Camera.Apparatus; dir : Vertex; t_min, t_max : Float) return Ray;
 
    function t_min (R : Ray) return Float;
 
    function t_max (R : Ray) return Float;
 
-   function dir (R : Ray) return Vertex;
+   function Ray_Direction (R : Ray) return Vertex;
 
    function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex;
    function To_Camera_Coordinates
@@ -41,7 +43,7 @@ private
 
    type Ray is tagged record
 
-      origin       : Vertex;
+      cam          : Camera.Apparatus;
       dir          : Vertex;
       t_min, t_max : Float;
 

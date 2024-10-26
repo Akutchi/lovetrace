@@ -1,6 +1,16 @@
 with Ada.Containers.Indefinite_Vectors;
+with Ada.Numerics.Generic_Real_Arrays;
+with Ada.Numerics.Generic_Elementary_Functions;
 
 package Geometry is
+
+   type Real is digits 4;
+
+   package Lin_Alg is new Ada.Numerics.Generic_Real_Arrays (Real);
+   use Lin_Alg;
+
+   package Functions is new Ada.Numerics.Generic_Elementary_Functions (Real);
+   use Functions;
 
    type Vertex is record
 
@@ -14,6 +24,7 @@ package Geometry is
 
    function Scale (s, u : Vertex) return Vertex;
    function norm (v : Vertex) return Vertex;
+   function Turn (v : Vertex; axis : character; α : Float) return Vertex;
    procedure Print (v : Vertex);
 
    type Texture is record

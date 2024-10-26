@@ -15,16 +15,17 @@ package Camera is
 
    type Apparatus is record
 
-      origin     : Geometry.Vertex;
-      screen     : Screen_Details;
-      l, r, t, b : Positive;
-      n, f       : Float;
+      origin           : Geometry.Vertex;
+      screen           : Screen_Details;
+      l, r, t, b       : Positive;
+      n, f             : Float;
+      alpha_y, alpha_x : Float;
 
    end record;
 
    function Create_Apparatus
-     (The_Eye                 : Geometry.Vertex;
-      Screen_Distance, Vision : Float;
-      Demi_Width, Demi_Height : Integer) return Apparatus;
+     (The_Eye                                   : Geometry.Vertex;
+      Screen_Distance, Vision, alpha_y, alpha_x : Float;
+      Demi_Width, Demi_Height                   : Integer) return Apparatus;
 
 end Camera;

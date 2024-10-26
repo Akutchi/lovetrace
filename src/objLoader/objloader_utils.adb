@@ -1,6 +1,5 @@
 with Ada.Strings;
 with Ada.Strings.Fixed;
-with Ada.Containers; use Ada.Containers;
 
 package body ObjLoader_Utils is
 
@@ -148,19 +147,21 @@ package body ObjLoader_Utils is
 
             Vertices (I) := UnboundedString_To_Positive (Tmp_List (0));
 
-            if Line_Components.Length (Tmp_List) = 2 then
-               --  f 1//1
+            case Line_Components.Length (Tmp_List) is
 
-               Textures (I) := 1;
-               Normals (I) := UnboundedString_To_Positive (Tmp_List (1));
+               when VERTEX_NORMAL =>
+                  Textures (I) := 1;
+                  Normals (I) := UnboundedString_To_Positive (Tmp_List (1));
 
-            else
-               --  f 1/2/3
+               when VERTEX_TEXTURE_NORMAL =>
+                  Textures (I) := UnboundedString_To_Positive (Tmp_List (1));
+                  Normals (I) := UnboundedString_To_Positive (Tmp_List (2));
 
-               Textures (I) := UnboundedString_To_Positive (Tmp_List (1));
-               Normals (I) := UnboundedString_To_Positive (Tmp_List (2));
+               when others =>
+                  Textures (I) := 1;
+                  Normals (I) := 1;
 
-            end if;
+            end case;
 
             I := I + 1;
 

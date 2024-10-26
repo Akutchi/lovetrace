@@ -4,11 +4,13 @@ package body Tracing is
    -- Init_Ray --
    --------------
 
-   function Init_Ray (o, dir : Vertex; t_min, t_max : Float) return Ray is
+   function Init_Ray
+     (cam : Camera.Apparatus; dir : Vertex; t_min, t_max : Float) return Ray
+   is
       R : Ray;
    begin
 
-      R.origin := o;
+      R.cam := cam;
       R.dir := dir;
       R.t_min := t_min;
       R.t_max := t_max;
@@ -39,19 +41,21 @@ package body Tracing is
    -- dir --
    ---------
 
-   function dir (R : Ray) return Vertex is
+   function Ray_Direction (R : Ray) return Vertex is
    begin
       return R.dir;
-   end dir;
+   end Ray_Direction;
 
    ---------------------------
    -- To_Camera_Coordinates --
    ---------------------------
 
    function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex is
+
+      v_shift : constant Vertex := v - R.cam.origin;
    begin
 
-      return v - R.origin;
+      return Turn (Turn (v_shift, 'y', R.cam.alpha_y), 'x', R.cam.alpha_x);
 
    end To_Camera_Coordinates;
 
@@ -61,11 +65,12 @@ package body Tracing is
       v_prime : Real_Vector := v;
    begin
 
-      v_prime (v_prime'First) := v_prime (v_prime'First) + Real (R.origin.x);
+      v_prime (v_prime'First) :=
+        v_prime (v_prime'First) + Real (R.cam.origin.x);
       v_prime (v_prime'First + 1) :=
-        v_prime (v_prime'First + 1) + Real (R.origin.y);
+        v_prime (v_prime'First + 1) + Real (R.cam.origin.y);
       v_prime (v_prime'First + 2) :=
-        -(v_prime (v_prime'First + 2) + Real (R.origin.z));
+        -(v_prime (v_prime'First + 2) + Real (R.cam.origin.z));
 
       return v_prime;
 
@@ -81,7 +86,7 @@ package body Tracing is
       A : constant Vertex := R.To_Camera_Coordinates (Vs (2));
       B : constant Vertex := R.To_Camera_Coordinates (Vs (3));
 
-      u_neg : constant Vertex := (-1.0) * R.dir;
+      u_neg : constant Vertex := (-1.0) * R.Ray_Direction;
 
       CA : constant Vertex := A - C;
       CB : constant Vertex := B - C;
@@ -102,7 +107,7 @@ package body Tracing is
          a : constant Float := Float (Sol (Sol'First));
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
-         ε : constant Float := 0.01;
+         ε : constant Float := 0.0;
 
       begin
 

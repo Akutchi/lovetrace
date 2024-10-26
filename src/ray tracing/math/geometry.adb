@@ -94,4 +94,55 @@ package body Geometry is
 
    end norm;
 
+   ----------
+   -- Turn --
+   ----------
+
+   function Turn (v : Vertex; axis : Character; α : Float) return Vertex is
+
+      R_α : constant Real := Real (α);
+
+      M : constant Real_Matrix :=
+        ((Cos (R_α), -Sin (R_α)), (Sin (R_α), Cos (R_α)));
+
+
+   begin
+
+      case axis is
+
+         when 'y' =>
+
+            declare
+               R_v : constant Real_Vector := (Real (v.x), Real (v.z));
+               R_u : constant Real_Vector := M * R_v;
+
+            begin
+               return
+                 (Float (R_u (R_u'First)),
+                  v.y,
+                  Float (R_u (R_u'First + 1)),
+                  1.0);
+            end;
+
+         when 'x' =>
+
+            declare
+               R_v : constant Real_Vector := (Real (v.y), Real (v.z));
+               R_u : constant Real_Vector := M * R_v;
+
+            begin
+               return
+                 (v.x,
+                  Float (R_u (R_u'First)),
+                  Float (R_u (R_u'First + 1)),
+                  1.0);
+            end;
+
+         when others =>
+            return v;
+
+      end case;
+
+   end Turn;
+
 end Geometry;

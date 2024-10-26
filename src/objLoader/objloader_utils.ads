@@ -3,6 +3,8 @@ with Ada.Containers.Indefinite_Vectors;
 with Ada.Strings.Unbounded;
 with Ada.Strings.Maps;
 
+with Ada.Containers; use Ada.Containers;
+
 with Geometry;
 
 package ObjLoader_Utils is
@@ -15,9 +17,14 @@ package ObjLoader_Utils is
    function UnboundedString_To_Positive
      (su : S_U.Unbounded_String) return Positive;
 
-   package Line_Components is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Natural, Element_Type => S_U.Unbounded_String,
-      "="        => S_U."=");
+   VERTEX_NORMAL         : constant Count_Type := 2;
+   VERTEX_TEXTURE_NORMAL : constant Count_Type := 3;
+
+   package Line_Components is new
+     Ada.Containers.Indefinite_Vectors
+       (Index_Type   => Natural,
+        Element_Type => S_U.Unbounded_String,
+        "="          => S_U."=");
 
    Whitespace : constant S_M.Character_Set := S_M.To_Set (' ');
    Slash      : constant S_M.Character_Set := S_M.To_Set ('/');
