@@ -12,7 +12,6 @@ package ObjLoader is
    end record;
 
    procedure Loader (File_Name : String; Objs : in out Scene);
-
 private
 
    VERTEX  : constant String := "v ";

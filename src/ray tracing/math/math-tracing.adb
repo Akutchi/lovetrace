@@ -1,5 +1,7 @@
 with Ada.Text_IO;
 
+with Ada.Containers; use Ada.Containers;
+
 package body Math.Tracing is
 
    --------------
@@ -43,6 +45,15 @@ package body Math.Tracing is
 
    end To_Camera_Coordinates;
 
+   function To_Camera_Coordinates (R : Ray; n : Normal) return Normal is
+
+      v_shift : constant Normal := n - R.cam.origin;
+   begin
+
+      return Rotate (Rotate (v_shift, 'y', R.cam.alpha_y), 'x', R.cam.alpha_x);
+
+   end To_Camera_Coordinates;
+
    -----------------------
    -- Point_In_Triangle --
    -----------------------
@@ -56,11 +67,17 @@ package body Math.Tracing is
    -- Intersect --
    ---------------
 
-   procedure Intersect (R : Ray; Vs : V_List.Vector; H : in out Hit) is
+   procedure Intersect
+     (R : Ray; Vs : V_List.Vector; Ns : N_List.Vector; H : in out Hit)
+   is
 
       C : constant Vertex := R.To_Camera_Coordinates (Vs (1));
       A : constant Vertex := R.To_Camera_Coordinates (Vs (2));
       B : constant Vertex := R.To_Camera_Coordinates (Vs (3));
+
+      N1 : constant Normal := R.To_Camera_Coordinates (Ns (1));
+      N2 : constant Normal := R.To_Camera_Coordinates (Ns (2));
+      N3 : constant Normal := R.To_Camera_Coordinates (Ns (3));
 
       u_neg : constant Vertex := (-1.0) * R.dir;
 
@@ -91,6 +108,7 @@ package body Math.Tracing is
 
             H.Touched_Object := True;
             H.t := t;
+            H.Normal_On_Touch := Norm (N2 + a * (N3 - N2) + b * (N1 - N2));
 
          end if;
       end;
@@ -101,50 +119,175 @@ package body Math.Tracing is
 
    end Intersect;
 
+   --------------
+   -- Value_At --
+   --------------
+
+   function Value_At
+     (R : Ray; t : Float; Ray_From_Camera : Boolean) return Vertex
+   is
+
+      o : constant Vertex :=
+        (if Ray_From_Camera then (0.0, 0.0, 0.0, 1.0) else R.cam.origin);
+   begin
+
+      if t > R.t_max then
+         return o + R.t_max * R.dir;
+
+      elsif t < R.t_min then
+         return o + R.t_min * R.dir;
+      end if;
+
+      return o + t * R.dir;
+
+   end Value_At;
+
+   ---------------------
+   -- Light_Intensity --
+   ---------------------
+
+   function Light_Intensity
+     (R     : Ray;
+      at_P  : Vertex;
+      N     : Normal;
+      Light : Sources.Abstract_Source'Class) return Color
+   is
+
+      I : constant Color := Choose ("Red");
+      L : constant Vertex := Norm (at_P - Light.origin);
+      η : constant Float := 0.8;
+
+      dempening : constant Float := η * Float'Max (0.0, L * N);
+
+   begin
+
+      --  Ada.Text_IO.Put_Line (Float'Image (dempening));
+      return (I.Red * dempening, I.Green * dempening, I.Blue * dempening);
+
+   end Light_Intensity;
+
+   ----------------------
+   -- Get_Face_Normals --
+   ----------------------
+
+   function Get_Face_Normals
+     (Ns            : N_List.Vector;
+      N_Indices     : Indices_List;
+      Face_Vertices : V_List.Vector) return N_List.Vector
+   is
+
+      Face_Normals : N_List.Vector;
+   begin
+
+      if N_List.Length (Ns) > 0 then
+
+         N_List.Append (Face_Normals, Ns (N_Indices (1)));
+         N_List.Append (Face_Normals, Ns (N_Indices (2)));
+         N_List.Append (Face_Normals, Ns (N_Indices (3)));
+
+         return Face_Normals;
+      end if;
+
+      for J
+        in V_List.First_Index (Face_Vertices)
+        .. V_List.Last_Index (Face_Vertices)
+      loop
+
+         declare
+
+            --  In order to have the permutations of [1, 2, 3]
+            --  We can calculate the functions Fn which Associate :
+            --
+            --  J -> 1 [1, 2, 3]
+            --  J -> 2 [3, 1, 2]
+            --  J -> 3 [2, 3, 1]
+            --          |  |  |
+            --         F1 F2 F3
+            --
+            --  This can easily be done because we only have 3 points and thus
+            --  it can be solve by finding ax**2 + bx + c
+
+            F1 : constant Positive :=
+              Positive (0.5 * (-3 * J ** 2 + 13 * J - 8));
+            F2 : constant Positive :=
+              Positive (0.5 * (3 * J ** 2 - 11 * J + 12));
+            F3 : constant Positive := 4 - J;
+
+            Anchor : constant Vertex := Face_Vertices (F1);
+            A      : constant Vertex := Face_Vertices (F2);
+            B      : constant Vertex := Face_Vertices (F3);
+
+            N : constant Normal := Norm (Normal_From_Points (Anchor, B, A));
+         begin
+
+            N_List.Append (Face_Normals, N);
+         end;
+      end loop;
+
+      return Face_Normals;
+
+   end Get_Face_Normals;
+
    ----------
    -- Cast --
    ----------
 
-   function Cast (R : Ray; Objs : ObjLoader.Scene) return Color is
+   function Cast
+     (R : Ray; Objs : ObjLoader.Scene; Light : Sources.Abstract_Source'Class)
+      return Color
+   is
 
-      H         : Hit;
-      Vs        : constant V_List.Vector := Objs.Vertex_List;
-      current_t : Float := -1.0;
+      Vs : constant V_List.Vector := Objs.Vertex_List;
+      Ns : constant N_List.Vector := Objs.Normal_List;
+
+      H               : Hit;
+      Current_t       : Float := -1.0;
+      Normal_On_Touch : Normal;
 
    begin
 
       for F of Objs.Faces_List loop
 
          declare
-            Indices       : constant Indices_List := F.Vertices_Indices;
+            V_Indices     : constant Indices_List := F.Vertices_Indices;
             Face_Vertices : V_List.Vector;
+
+            N_Indices    : constant Indices_List := F.Normals_Indices;
+            Face_Normals : N_List.Vector;
 
          begin
 
-            V_List.Append (Face_Vertices, Vs (Indices (1)));
-            V_List.Append (Face_Vertices, Vs (Indices (2)));
-            V_List.Append (Face_Vertices, Vs (Indices (3)));
+            V_List.Append (Face_Vertices, Vs (V_Indices (1)));
+            V_List.Append (Face_Vertices, Vs (V_Indices (2)));
+            V_List.Append (Face_Vertices, Vs (V_Indices (3)));
 
-            R.Intersect (Face_Vertices, H);
+            Face_Normals := Get_Face_Normals (Ns, N_Indices, Face_Vertices);
 
-            if current_t = -1.0 then
-               current_t := H.t;
+            R.Intersect (Face_Vertices, Face_Normals, H);
 
-            elsif H.t < current_t then
-               current_t := H.t;
+            if Current_t = -1.0 then
+               Current_t := H.t;
+               Normal_On_Touch := H.Normal_On_Touch;
+
+            elsif H.t < Current_t then
+               Current_t := H.t;
+               Normal_On_Touch := H.Normal_On_Touch;
 
             end if;
          end;
-
       end loop;
 
-      if current_t /= H.NO_INTERSECTION then
+      if Current_t /= H.NO_INTERSECTION then
 
-         return Choose ("red");
+         return
+           R.Light_Intensity
+             (R.Value_At (Current_t, Ray_From_Camera => True),
+              Normal_On_Touch,
+              Light);
 
       end if;
 
-      return Choose ("black");
+      return Choose ("Black");
 
    end Cast;
 

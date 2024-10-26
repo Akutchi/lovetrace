@@ -52,17 +52,24 @@ package Math.Geometry is
         "="          => "=");
 
    function "+" (u, v : Vertex) return Vertex;
+   function "+" (u, v : Normal) return Normal;
 
    function "*" (λ : Float; u : Vertex) return Vertex;
+   function "*" (λ : Float; u : Normal) return Normal;
    function "*" (λ : Integer; u : Vertex) return Vertex;
    function "*" (u : Vertex; N : Normal) return Float;
 
    function "-" (u, v : Vertex) return Vertex;
+   function "-" (u, v : Normal) return Normal;
+   function "-" (n : Normal; v : Vertex) return Normal;
 
    function Norm (v : Vertex) return Vertex;
    function Norm (v : Normal) return Normal;
 
    function Rotate (v : Vertex; axis : Character; α : Float) return Vertex;
+   function Rotate (n : Normal; axis : Character; α : Float) return Normal;
+
+   function Normal_From_Points (Anchor, A, B : Vertex) return Normal;
 
    procedure Print (v : Vertex);
    procedure Print (v : Normal);

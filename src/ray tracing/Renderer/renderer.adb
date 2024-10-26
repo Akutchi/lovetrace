@@ -59,9 +59,14 @@ package body Renderer is
 
       X : constant Natural := cam.screen.x - cam.screen.MIN_X;
       Y : constant Natural := -cam.screen.y + cam.screen.MAX_Y;
+
+      No_Color : Color := (-1.0, -1.0, -1.0);
    begin
 
-      Data (Y, X) := Color_To_Color_Info (C);
+      if C /= No_Color then
+
+         Data (Y, X) := Color_To_Color_Info (C);
+      end if;
 
    end Put_Pixel;
 

@@ -8,6 +8,7 @@ with Math.Geometry;
 with Math.Tracing;
 
 with Camera;
+with Sources;
 with Renderer;
 with Colors;
 
@@ -22,14 +23,14 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 5.0, 1.0);
+   o : constant G.Vertex := (0.0, 4.0, 10.0, 1.0);
 
    cam : Camera.Apparatus :=
      Camera.Create_Apparatus
        (The_Eye         => o,
         Screen_Distance => 5.0,
         alpha_y         => 0.0,
-        alpha_x         => 0.0,
+        alpha_x         => 0.4,
         Vision          => 30.0,
         Demi_Width      => 200,
         Demi_Height     => 200);
@@ -37,11 +38,13 @@ procedure Lovetrace is
    --  barycenter + the object width or smth
    --  to adapt to every scene.
 
+   light : Sources.Point_Source;
+
    Image : IIO_H.Handle;
 
 begin
 
-   ObjLoader.Loader ("../scenes/triangle.obj", Objs);
+   ObjLoader.Loader ("../scenes/pyramid.obj", Objs);
 
    Renderer.Create_Image ("../scenes_image/res.png", cam);
    IIO_O.Read ("../scenes_image/res.png", Image);
@@ -49,11 +52,13 @@ begin
    declare
       Data : IIO.Image_Data := Image.Value;
 
-      unnorm_dir, dir : G.Vertex; --  in eye coordinates, at the new origin
+      unnorm_dir, dir : G.Vertex; --  in eye coordinates
       Ray             : T.Ray;
       Pixel_Color     : Colors.Color;
 
    begin
+
+      light.origin := (0.0, 10.0, 5.0, 1.0); --  in eye coordinates
 
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
          for Y in reverse cam.screen.MIN_Y + 1 .. cam.screen.MAX_Y loop
@@ -67,7 +72,7 @@ begin
             dir := G.Norm (unnorm_dir);
 
             Ray := T.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
-            Pixel_Color := Ray.Cast (Objs);
+            Pixel_Color := Ray.Cast (Objs, light);
 
             cam.screen.x := X;
             cam.screen.y := Y;

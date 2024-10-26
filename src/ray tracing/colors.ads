@@ -18,7 +18,8 @@ package Colors is
       LightGray,
       Gray,
       SlateGray,
-      Black);
+      Black,
+      NoColor);
 
    type Color is record
 

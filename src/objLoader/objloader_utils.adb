@@ -157,6 +157,9 @@ package body ObjLoader_Utils is
 
             case Line_Components.Length (Tmp_List) is
 
+               when VERTEX =>
+                  null;
+
                when VERTEX_NORMAL =>
                   Textures (I) := 1;
                   Normals (I) := UnboundedString_To_Positive (Tmp_List (1));

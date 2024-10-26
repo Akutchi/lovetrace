@@ -56,6 +56,9 @@ package body Colors is
          when Black =>
             return (0.0, 0.0, 0.0);
 
+         when NoColor =>
+            return (-1.0, -1.0, -1.0);
+
       end case;
 
    end Choose;

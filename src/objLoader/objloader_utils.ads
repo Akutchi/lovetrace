@@ -23,6 +23,7 @@ private
    Slash      : constant S_M.Character_Set := S_M.To_Set ('/');
 
    Has_No_W              : constant Count_Type := 4;
+   VERTEX                : constant Count_Type := 0; --  f 1 2 3
    VERTEX_NORMAL         : constant Count_Type := 2; --  f 1//1
    VERTEX_TEXTURE_NORMAL : constant Count_Type := 3; --  f 1/1/1
 
