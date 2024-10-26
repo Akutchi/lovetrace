@@ -63,7 +63,7 @@ package body ObjLoader_Utils is
    -- Format_To_Vertex --
    ----------------------
 
-   function Format_To_Vertex (Line : String) return Geometry.Vertex is
+   function Format_To_Vertex (Line : String) return Math.Geometry.Vertex is
 
       Token_List : Line_Components.Vector;
    begin
@@ -90,7 +90,7 @@ package body ObjLoader_Utils is
    -- Format_To_Texture --
    -----------------------
 
-   function Format_To_Texture (Line : String) return Geometry.Texture is
+   function Format_To_Texture (Line : String) return Math.Geometry.Texture is
 
       Token_List : Line_Components.Vector;
    begin
@@ -107,10 +107,10 @@ package body ObjLoader_Utils is
    -- Format_To_Normal --
    ----------------------
 
-   function Format_To_Normal (Line : String) return Geometry.Normal is
+   function Format_To_Normal (Line : String) return Math.Geometry.Normal is
 
       Token_List  : Line_Components.Vector;
-      Normal_Vect : Geometry.Normal;
+      Normal_Vect : Math.Geometry.Normal;
    begin
 
       Token_List := Tokenize_Line (Line, Whitespace);
@@ -119,7 +119,7 @@ package body ObjLoader_Utils is
          UnboundedString_To_Float (Token_List (2)),
          UnboundedString_To_Float (Token_List (3)));
 
-      return Geometry.Norm (Normal_Vect);
+      return Math.Geometry.Norm (Normal_Vect);
 
    end Format_To_Normal;
 
@@ -127,11 +127,11 @@ package body ObjLoader_Utils is
    -- Format_To_Face --
    --------------------
 
-   function Format_To_Face (Line : String) return Geometry.Face is
+   function Format_To_Face (Line : String) return Math.Geometry.Face is
 
       Token_List, Tmp_List : Line_Components.Vector;
 
-      Vertices, Textures, Normals : Geometry.Indices_List;
+      Vertices, Textures, Normals : Math.Geometry.Indices_List;
 
       I : Positive := 1;
 

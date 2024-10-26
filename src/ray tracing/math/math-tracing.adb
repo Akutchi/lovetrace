@@ -1,6 +1,6 @@
 with Ada.Text_IO;
 
-package body Tracing is
+package body Math.Tracing is
 
    --------------
    -- Init_Ray --
@@ -148,4 +148,4 @@ package body Tracing is
 
    end Cast;
 
-end Tracing;
+end Math.Tracing;

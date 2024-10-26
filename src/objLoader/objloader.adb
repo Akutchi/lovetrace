@@ -35,19 +35,19 @@ package body ObjLoader is
             if Line /= "" then
 
                if Is_Type (VERTEX, Line) then
-                  Geometry.V_List.Append
+                  Math.Geometry.V_List.Append
                     (Objs.Vertex_List, Format_To_Vertex (Line));
 
                elsif Is_Type (TEXTURE, Line) then
-                  Geometry.T_List.Append
+                  Math.Geometry.T_List.Append
                     (Objs.Texture_List, Format_To_Texture (Line));
 
                elsif Is_Type (NORMAL, Line) then
-                  Geometry.N_List.Append
+                  Math.Geometry.N_List.Append
                     (Objs.Normal_List, Format_To_Normal (Line));
 
                elsif Is_Type (FACE, Line) then
-                  Geometry.F_List.Append
+                  Math.Geometry.F_List.Append
                     (Objs.Faces_List, Format_To_Face (Line));
 
                end if;

@@ -3,10 +3,12 @@ with Image_IO.Holders;
 with Image_IO.Operations;
 
 with ObjLoader;
-with Geometry;
+
+with Math.Geometry;
+with Math.Tracing;
+
 with Camera;
 with Renderer;
-with Tracing;
 with Colors;
 
 procedure Lovetrace is
@@ -15,7 +17,8 @@ procedure Lovetrace is
    package IIO_H renames Image_IO.Holders;
    package IIO_O renames Image_IO.Operations;
 
-   package G renames Geometry;
+   package G renames Math.Geometry;
+   package T renames Math.Tracing;
 
    Objs : ObjLoader.Scene;
 
@@ -47,7 +50,7 @@ begin
       Data : IIO.Image_Data := Image.Value;
 
       unnorm_dir, dir : G.Vertex; --  in eye coordinates, at the new origin
-      Ray             : Tracing.Ray;
+      Ray             : T.Ray;
       Pixel_Color     : Colors.Color;
 
    begin
@@ -63,7 +66,7 @@ begin
 
             dir := G.Norm (unnorm_dir);
 
-            Ray := Tracing.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
+            Ray := T.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
             Pixel_Color := Ray.Cast (Objs);
 
             cam.screen.x := X;

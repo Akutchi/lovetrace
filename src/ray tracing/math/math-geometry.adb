@@ -4,7 +4,7 @@ with Ada.Text_IO;
 
 with GNAT.Formatted_String; use GNAT.Formatted_String;
 
-package body Geometry is
+package body Math.Geometry is
 
    package N_EF renames Ada.Numerics.Elementary_Functions;
    package T_IO renames Ada.Text_IO;
@@ -161,4 +161,4 @@ package body Geometry is
    end Print;
 
 
-end Geometry;
+end Math.Geometry;

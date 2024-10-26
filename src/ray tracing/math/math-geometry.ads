@@ -1,16 +1,6 @@
 with Ada.Containers.Indefinite_Vectors;
-with Ada.Numerics.Generic_Real_Arrays;
-with Ada.Numerics.Generic_Elementary_Functions;
 
-package Geometry is
-
-   type Real is digits 4;
-
-   package Lin_Alg is new Ada.Numerics.Generic_Real_Arrays (Real);
-   use Lin_Alg;
-
-   package Functions is new Ada.Numerics.Generic_Elementary_Functions (Real);
-   use Functions;
+package Math.Geometry is
 
    type Indices_List is array (Positive range 1 .. 3) of Positive;
 
@@ -77,4 +67,4 @@ package Geometry is
    procedure Print (v : Vertex);
    procedure Print (v : Normal);
 
-end Geometry;
+end Math.Geometry;

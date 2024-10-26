@@ -5,7 +5,7 @@ with Ada.Strings.Maps;
 
 with Ada.Containers; use Ada.Containers;
 
-with Geometry;
+with Math.Geometry;
 
 package ObjLoader_Utils is
 
@@ -33,9 +33,9 @@ package ObjLoader_Utils is
      (Line : String; separator : S_M.Character_Set)
       return Line_Components.Vector;
 
-   function Format_To_Vertex (Line : String) return Geometry.Vertex;
-   function Format_To_Texture (Line : String) return Geometry.Texture;
-   function Format_To_Normal (Line : String) return Geometry.Normal;
-   function Format_To_Face (Line : String) return Geometry.Face;
+   function Format_To_Vertex (Line : String) return Math.Geometry.Vertex;
+   function Format_To_Texture (Line : String) return Math.Geometry.Texture;
+   function Format_To_Normal (Line : String) return Math.Geometry.Normal;
+   function Format_To_Face (Line : String) return Math.Geometry.Face;
 
 end ObjLoader_Utils;

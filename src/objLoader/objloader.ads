@@ -1,4 +1,4 @@
-with Geometry;
+with Math.Geometry;
 
 package ObjLoader is
 
@@ -9,10 +9,10 @@ package ObjLoader is
 
    type Scene is record
 
-      Vertex_List  : Geometry.V_List.Vector;
-      Texture_List : Geometry.T_List.Vector;
-      Normal_List  : Geometry.N_List.Vector;
-      Faces_List   : Geometry.F_List.Vector;
+      Vertex_List  : Math.Geometry.V_List.Vector;
+      Texture_List : Math.Geometry.T_List.Vector;
+      Normal_List  : Math.Geometry.N_List.Vector;
+      Faces_List   : Math.Geometry.F_List.Vector;
 
    end record;
 
