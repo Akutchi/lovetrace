@@ -1,5 +1,9 @@
 package body Camera is
 
+   ----------------------
+   -- Create_Apparatus --
+   ----------------------
+
    function Create_Apparatus
      (The_Eye                                   : Math.Geometry.Vertex;
       Screen_Distance, Vision, alpha_y, alpha_x : Float;

@@ -32,7 +32,7 @@ package body ObjLoader is
             Line : constant String := T_IO.Get_Line (ObjFile);
          begin
 
-            if Line /= "" then
+            if Line /= "" and then Line (Line'First) /= '#' then
 
                if Is_Type (VERTEX, Line) then
                   Math.Geometry.V_List.Append

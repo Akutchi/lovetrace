@@ -2,11 +2,6 @@ with Math.Geometry;
 
 package ObjLoader is
 
-   VERTEX  : constant String := "v ";
-   TEXTURE : constant String := "vt";
-   NORMAL  : constant String := "vn";
-   FACE    : constant String := "f ";
-
    type Scene is record
 
       Vertex_List  : Math.Geometry.V_List.Vector;
@@ -19,6 +14,11 @@ package ObjLoader is
    procedure Loader (File_Name : String; Objs : in out Scene);
 
 private
+
+   VERTEX  : constant String := "v ";
+   TEXTURE : constant String := "vt";
+   NORMAL  : constant String := "vn";
+   FACE    : constant String := "f ";
 
    function Is_Type (T, Line : String) return Boolean;
 

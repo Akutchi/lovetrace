@@ -12,13 +12,19 @@ package ObjLoader_Utils is
    package S_U renames Ada.Strings.Unbounded;
    package S_M renames Ada.Strings.Maps;
 
-   function UnboundedString_To_Float (su : S_U.Unbounded_String) return Float;
+   function Format_To_Vertex (Line : String) return Math.Geometry.Vertex;
+   function Format_To_Texture (Line : String) return Math.Geometry.Texture;
+   function Format_To_Normal (Line : String) return Math.Geometry.Normal;
+   function Format_To_Face (Line : String) return Math.Geometry.Face;
 
-   function UnboundedString_To_Positive
-     (su : S_U.Unbounded_String) return Positive;
+private
 
-   VERTEX_NORMAL         : constant Count_Type := 2;
-   VERTEX_TEXTURE_NORMAL : constant Count_Type := 3;
+   Whitespace : constant S_M.Character_Set := S_M.To_Set (' ');
+   Slash      : constant S_M.Character_Set := S_M.To_Set ('/');
+
+   Has_No_W              : constant Count_Type := 4;
+   VERTEX_NORMAL         : constant Count_Type := 2; --  f 1//1
+   VERTEX_TEXTURE_NORMAL : constant Count_Type := 3; --  f 1/1/1
 
    package Line_Components is new
      Ada.Containers.Indefinite_Vectors
@@ -26,16 +32,15 @@ package ObjLoader_Utils is
         Element_Type => S_U.Unbounded_String,
         "="          => S_U."=");
 
-   Whitespace : constant S_M.Character_Set := S_M.To_Set (' ');
-   Slash      : constant S_M.Character_Set := S_M.To_Set ('/');
+   function UnboundedString_To_Float (su : S_U.Unbounded_String) return Float;
+
+   function UnboundedString_To_Positive
+     (su : S_U.Unbounded_String) return Positive;
 
    function Tokenize_Line
      (Line : String; separator : S_M.Character_Set)
       return Line_Components.Vector;
 
-   function Format_To_Vertex (Line : String) return Math.Geometry.Vertex;
-   function Format_To_Texture (Line : String) return Math.Geometry.Texture;
-   function Format_To_Normal (Line : String) return Math.Geometry.Normal;
-   function Format_To_Face (Line : String) return Math.Geometry.Face;
+   function Has_W (Vertex_Components : Line_Components.Vector) return Boolean;
 
 end ObjLoader_Utils;

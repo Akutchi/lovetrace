@@ -59,6 +59,16 @@ package body ObjLoader_Utils is
 
    end Tokenize_Line;
 
+   -----------
+   -- Has_W --
+   -----------
+
+   function Has_W (Vertex_Components : Line_Components.Vector) return Boolean
+   is
+   begin
+      return Line_Components.Length (Vertex_Components) = 5;
+   end Has_W;
+
    ----------------------
    -- Format_To_Vertex --
    ----------------------
@@ -66,23 +76,21 @@ package body ObjLoader_Utils is
    function Format_To_Vertex (Line : String) return Math.Geometry.Vertex is
 
       Token_List : Line_Components.Vector;
+      v          : Math.Geometry.Vertex;
    begin
 
       Token_List := Tokenize_Line (Line, Whitespace);
-
-      if Line_Components.Length (Token_List) = 4 then
-         return
-           (UnboundedString_To_Float (Token_List (1)),
-            UnboundedString_To_Float (Token_List (2)),
-            UnboundedString_To_Float (Token_List (3)),
-            1.0);
-      end if;
-
-      return
+      v :=
         (UnboundedString_To_Float (Token_List (1)),
          UnboundedString_To_Float (Token_List (2)),
          UnboundedString_To_Float (Token_List (3)),
-         UnboundedString_To_Float (Token_List (4)));
+         1.0);
+
+      if Has_W (Token_List) then
+         v.w := UnboundedString_To_Float (Token_List (4));
+      end if;
+
+      return v;
 
    end Format_To_Vertex;
 
