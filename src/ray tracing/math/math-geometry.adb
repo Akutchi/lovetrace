@@ -3,6 +3,7 @@ with Ada.Numerics.Elementary_Functions;
 with Ada.Text_IO;
 
 with GNAT.Formatted_String; use GNAT.Formatted_String;
+with Ada.Containers;        use Ada.Containers;
 
 package body Math.Geometry is
 
@@ -73,11 +74,11 @@ package body Math.Geometry is
       return (n.x - v.x, n.y - v.y, n.z - v.z);
    end "-";
 
-   ----------
-   -- Norm --
-   ----------
+   ---------------
+   -- Normalize --
+   ---------------
 
-   function Norm (v : Vertex) return Vertex is
+   function Normalize (v : Vertex) return Vertex is
 
       vect_norm : Float;
       ε         : constant Float := 0.001;
@@ -92,9 +93,9 @@ package body Math.Geometry is
 
       return (v.x / vect_norm, v.y / vect_norm, v.z / vect_norm, 1.0);
 
-   end Norm;
+   end Normalize;
 
-   function Norm (v : Normal) return Normal is
+   function Normalize (v : Normal) return Normal is
 
       vect_norm : Float;
       ε         : constant Float := 0.001;
@@ -108,7 +109,7 @@ package body Math.Geometry is
 
       return (v.x / vect_norm, v.y / vect_norm, v.z / vect_norm);
 
-   end Norm;
+   end Normalize;
 
    ------------
    -- Rotate --
@@ -217,6 +218,57 @@ package body Math.Geometry is
 
    end Normal_From_Points;
 
+   ----------------------
+   -- Get_Face_Normals --
+   ----------------------
+
+   function Get_Face_Normals
+     (Ns            : N_List.Vector;
+      N_Indices     : Indices_List;
+      Face_Vertices : V_List.Vector) return N_List.Vector
+   is
+
+      Face_Normals : N_List.Vector;
+   begin
+
+      if N_List.Length (Ns) > 0 then
+
+         N_List.Append (Face_Normals, Ns (N_Indices (1)));
+         N_List.Append (Face_Normals, Ns (N_Indices (2)));
+         N_List.Append (Face_Normals, Ns (N_Indices (3)));
+
+         return Face_Normals;
+      end if;
+
+      for J
+        in V_List.First_Index (Face_Vertices)
+        .. V_List.Last_Index (Face_Vertices)
+      loop
+
+         declare
+
+            F1 : constant Positive :=
+              Positive (0.5 * (-3 * J ** 2 + 13 * J - 8));
+            F2 : constant Positive :=
+              Positive (0.5 * (3 * J ** 2 - 11 * J + 12));
+            F3 : constant Positive := 4 - J;
+
+            Anchor : constant Vertex := Face_Vertices (F1);
+            A      : constant Vertex := Face_Vertices (F2);
+            B      : constant Vertex := Face_Vertices (F3);
+
+            N : constant Normal :=
+              Normalize (Normal_From_Points (Anchor, B, A));
+         begin
+
+            N_List.Append (Face_Normals, N);
+         end;
+      end loop;
+
+      return Face_Normals;
+
+   end Get_Face_Normals;
+
    -----------
    -- Print --
    -----------
@@ -238,6 +290,5 @@ package body Math.Geometry is
       Format := Format & v.x & v.y & v.z;
       T_IO.Put_Line (-Format);
    end Print;
-
 
 end Math.Geometry;

@@ -1,7 +1,5 @@
 with Ada.Text_IO;
 
-with Ada.Containers; use Ada.Containers;
-
 package body Math.Tracing is
 
    --------------
@@ -108,7 +106,8 @@ package body Math.Tracing is
 
             H.Touched_Object := True;
             H.t := t;
-            H.Normal_On_Touch := Norm (N2 + a * (N3 - N2) + b * (N1 - N2));
+            H.Normal_On_Touch :=
+              Normalize (N2 + a * (N3 - N2) + b * (N1 - N2));
 
          end if;
       end;
@@ -154,79 +153,16 @@ package body Math.Tracing is
    is
 
       I : constant Color := Choose ("Red");
-      L : constant Vertex := Norm (at_P - Light.origin);
-      η : constant Float := 0.8;
+      L : constant Vertex := Normalize (at_P - Light.origin);
+      η : constant Float := 1.0;
 
       dempening : constant Float := η * Float'Max (0.0, L * N);
 
    begin
 
-      --  Ada.Text_IO.Put_Line (Float'Image (dempening));
-      return (I.Red * dempening, I.Green * dempening, I.Blue * dempening);
+      return (dempening * I.Red, dempening * I.Green, dempening * I.Blue);
 
    end Light_Intensity;
-
-   ----------------------
-   -- Get_Face_Normals --
-   ----------------------
-
-   function Get_Face_Normals
-     (Ns            : N_List.Vector;
-      N_Indices     : Indices_List;
-      Face_Vertices : V_List.Vector) return N_List.Vector
-   is
-
-      Face_Normals : N_List.Vector;
-   begin
-
-      if N_List.Length (Ns) > 0 then
-
-         N_List.Append (Face_Normals, Ns (N_Indices (1)));
-         N_List.Append (Face_Normals, Ns (N_Indices (2)));
-         N_List.Append (Face_Normals, Ns (N_Indices (3)));
-
-         return Face_Normals;
-      end if;
-
-      for J
-        in V_List.First_Index (Face_Vertices)
-        .. V_List.Last_Index (Face_Vertices)
-      loop
-
-         declare
-
-            --  In order to have the permutations of [1, 2, 3]
-            --  We can calculate the functions Fn which Associate :
-            --
-            --  J -> 1 [1, 2, 3]
-            --  J -> 2 [3, 1, 2]
-            --  J -> 3 [2, 3, 1]
-            --          |  |  |
-            --         F1 F2 F3
-            --
-            --  This can easily be done because we only have 3 points and thus
-            --  it can be solve by finding ax**2 + bx + c
-
-            F1 : constant Positive :=
-              Positive (0.5 * (-3 * J ** 2 + 13 * J - 8));
-            F2 : constant Positive :=
-              Positive (0.5 * (3 * J ** 2 - 11 * J + 12));
-            F3 : constant Positive := 4 - J;
-
-            Anchor : constant Vertex := Face_Vertices (F1);
-            A      : constant Vertex := Face_Vertices (F2);
-            B      : constant Vertex := Face_Vertices (F3);
-
-            N : constant Normal := Norm (Normal_From_Points (Anchor, B, A));
-         begin
-
-            N_List.Append (Face_Normals, N);
-         end;
-      end loop;
-
-      return Face_Normals;
-
-   end Get_Face_Normals;
 
    ----------
    -- Cast --
