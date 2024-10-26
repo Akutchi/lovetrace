@@ -57,7 +57,7 @@ package body Tracing is
       v_shift : constant Vertex := v - R.cam.origin;
    begin
 
-      return Turn (Turn (v_shift, 'y', R.cam.alpha_y), 'x', R.cam.alpha_x);
+      return Rotate (Rotate (v_shift, 'y', R.cam.alpha_y), 'x', R.cam.alpha_x);
 
    end To_Camera_Coordinates;
 

@@ -2,6 +2,8 @@ with Ada.Numerics.Elementary_Functions;
 
 with Ada.Text_IO;
 
+with GNAT.Formatted_String; use GNAT.Formatted_String;
+
 package body Geometry is
 
    package N_EF renames Ada.Numerics.Elementary_Functions;
@@ -37,31 +39,11 @@ package body Geometry is
       return u.x * N.x + u.y * N.y + u.z * N.z;
    end "*";
 
-   procedure Print (v : Vertex) is
-   begin
-
-      T_IO.Put_Line
-        (Float'Image (v.x)
-         & " "
-         & Float'Image (v.y)
-         & " "
-         & Float'Image (v.z));
-   end Print;
-
-   -----------
-   -- Scale --
-   -----------
-
-   function Scale (s, u : Vertex) return Vertex is
-   begin
-      return (s.x * u.x, s.y * u.y, s.z * u.z, u.w);
-   end Scale;
-
    ----------
-   -- norm --
+   -- Norm --
    ----------
 
-   function norm (v : Vertex) return Vertex is
+   function Norm (v : Vertex) return Vertex is
 
       vect_norm : Float;
       ε         : constant Float := 0.001;
@@ -76,9 +58,9 @@ package body Geometry is
 
       return (v.x / vect_norm, v.y / vect_norm, v.z / vect_norm, 1.0);
 
-   end norm;
+   end Norm;
 
-   function norm (v : Normal) return Normal is
+   function Norm (v : Normal) return Normal is
 
       vect_norm : Float;
       ε         : constant Float := 0.001;
@@ -92,19 +74,18 @@ package body Geometry is
 
       return (v.x / vect_norm, v.y / vect_norm, v.z / vect_norm);
 
-   end norm;
+   end Norm;
 
    ----------
    -- Turn --
    ----------
 
-   function Turn (v : Vertex; axis : Character; α : Float) return Vertex is
+   function Rotate (v : Vertex; axis : Character; α : Float) return Vertex is
 
       R_α : constant Real := Real (α);
 
       M : constant Real_Matrix :=
         ((Cos (R_α), -Sin (R_α)), (Sin (R_α), Cos (R_α)));
-
 
    begin
 
@@ -143,6 +124,20 @@ package body Geometry is
 
       end case;
 
-   end Turn;
+   end Rotate;
+
+   -----------
+   -- Print --
+   -----------
+
+   procedure Print (v : Vertex) is
+
+      Format : Formatted_String := +"(%2.f, %2.f, %2.f)";
+   begin
+
+      Format := Format & v.x & v.y & v.z;
+      T_IO.Put_Line (-Format);
+   end Print;
+
 
 end Geometry;

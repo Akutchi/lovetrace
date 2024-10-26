@@ -22,9 +22,8 @@ package Geometry is
    function "*" (λ : Float; u : Vertex) return Vertex;
    function "*" (λ : Integer; u : Vertex) return Vertex;
 
-   function Scale (s, u : Vertex) return Vertex;
-   function norm (v : Vertex) return Vertex;
-   function Turn (v : Vertex; axis : character; α : Float) return Vertex;
+   function Norm (v : Vertex) return Vertex;
+   function Rotate (v : Vertex; axis : Character; α : Float) return Vertex;
    procedure Print (v : Vertex);
 
    type Texture is record
@@ -38,7 +37,7 @@ package Geometry is
    end record;
 
    function "*" (u : Vertex; N : Normal) return Float;
-   function norm (v : Normal) return Normal;
+   function Norm (v : Normal) return Normal;
 
    type Indices_List is array (Positive range 1 .. 3) of Positive;
 

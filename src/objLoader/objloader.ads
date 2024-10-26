@@ -13,7 +13,6 @@ package ObjLoader is
       Texture_List : Geometry.T_List.Vector;
       Normal_List  : Geometry.N_List.Vector;
       Faces_List   : Geometry.F_List.Vector;
-      Scale        : Geometry.Vertex;
 
    end record;
 

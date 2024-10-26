@@ -19,15 +19,15 @@ procedure Lovetrace is
 
    Objs : ObjLoader.Scene;
 
-   o : constant G.Vertex := (0.0, 0.0, 5.0, 1.0);
+   o : constant G.Vertex := (0.0, 0.0, 8.5, 1.0);
 
    cam : Camera.Apparatus :=
      Camera.Create_Apparatus
        (The_Eye         => o,
-        Screen_Distance => 8.0,
+        Screen_Distance => 5.0,
         alpha_y         => 0.0,
         alpha_x         => 0.0,
-        Vision          => 100.0,
+        Vision          => 30.0,
         Demi_Width      => 200,
         Demi_Height     => 200);
    --  vision can be bettered by taking the farthest
@@ -38,7 +38,6 @@ procedure Lovetrace is
 
 begin
 
-   Objs.Scale := (50.0, 50.0, 1.0, 1.0);
    ObjLoader.Loader ("../scenes/triangle.obj", Objs);
 
    Renderer.Create_Image ("../scenes_image/res.png", cam);
@@ -56,8 +55,13 @@ begin
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
          for Y in reverse cam.screen.MIN_Y + 1 .. cam.screen.MAX_Y loop
 
-            unnorm_dir := (Float (X), Float (Y), -cam.n, 1.0);
-            dir := G.norm (unnorm_dir);
+            unnorm_dir :=
+              (Float (X) / Float (cam.screen.MAX_X),
+               Float (Y) / Float (cam.screen.MAX_Y),
+               -cam.n,
+               1.0);
+
+            dir := G.Norm (unnorm_dir);
 
             R := Tracing.Init_Ray (cam, dir, t_min => 0.0, t_max => cam.f);
             Pixel_Color := R.Cast (Objs);

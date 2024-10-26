@@ -119,7 +119,7 @@ package body ObjLoader_Utils is
          UnboundedString_To_Float (Token_List (2)),
          UnboundedString_To_Float (Token_List (3)));
 
-      return Geometry.norm (Normal_Vect);
+      return Geometry.Norm (Normal_Vect);
 
    end Format_To_Normal;
 
