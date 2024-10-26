@@ -21,32 +21,14 @@ package body Tracing is
 
    end Init_Ray;
 
-   -----------
-   -- t_min --
-   -----------
+   -----------------
+   -- Is_In_Range --
+   -----------------
 
-   function t_min (R : Ray) return Float is
+   function Is_In_Range (R : Ray; t : Float) return Boolean is
    begin
-      return R.t_min;
-   end t_min;
-
-   -----------
-   -- t_max --
-   -----------
-
-   function t_max (R : Ray) return Float is
-   begin
-      return R.t_max;
-   end t_max;
-
-   ---------
-   -- dir --
-   ---------
-
-   function Ray_Direction (R : Ray) return Vertex is
-   begin
-      return R.dir;
-   end Ray_Direction;
+      return R.t_min < t and then t < R.t_max;
+   end Is_In_Range;
 
    ---------------------------
    -- To_Camera_Coordinates --
@@ -61,17 +43,26 @@ package body Tracing is
 
    end To_Camera_Coordinates;
 
+   -----------------------
+   -- Point_In_Triangle --
+   -----------------------
+
+   function Point_In_Triangle (a, b, ε : Float) return Boolean is
+   begin
+      return a >= 0.0 and then b >= 0.0 and then a + b <= 1.0 - ε;
+   end Point_In_Triangle;
+
    ---------------
    -- Intersect --
    ---------------
 
-   procedure Intersect (Vs : V_List.Vector; R : Ray; H : in out Hit) is
+   procedure Intersect (R : Ray; Vs : V_List.Vector; H : in out Hit) is
 
       C : constant Vertex := R.To_Camera_Coordinates (Vs (1));
       A : constant Vertex := R.To_Camera_Coordinates (Vs (2));
       B : constant Vertex := R.To_Camera_Coordinates (Vs (3));
 
-      u_neg : constant Vertex := (-1.0) * R.Ray_Direction;
+      u_neg : constant Vertex := (-1.0) * R.dir;
 
       CA : constant Vertex := A - C;
       CB : constant Vertex := B - C;
@@ -96,18 +87,12 @@ package body Tracing is
 
       begin
 
-         if a >= 0.0
-           and then b >= 0.0
-           and then a + b <= 1.0 - ε
-           and then t > R.t_min
-           and then t < R.t_max
-         then
+         if Point_In_Triangle (a, b, ε) and then R.Is_In_Range (t) then
 
             H.Touched_Object := True;
             H.t := t;
 
          end if;
-
       end;
 
    exception
@@ -124,7 +109,7 @@ package body Tracing is
 
       H         : Hit;
       Vs        : constant V_List.Vector := Objs.Vertex_List;
-      current_t : Float := R.t_max;
+      current_t : Float := -1.0;
 
    begin
 
@@ -140,9 +125,12 @@ package body Tracing is
             V_List.Append (Face_Vertices, Vs (Indices (2)));
             V_List.Append (Face_Vertices, Vs (Indices (3)));
 
-            Intersect (Face_Vertices, R, H);
+            R.Intersect (Face_Vertices, H);
 
-            if H.t < current_t then
+            if current_t = -1.0 then
+               current_t := H.t;
+
+            elsif H.t < current_t then
                current_t := H.t;
 
             end if;

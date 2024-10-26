@@ -18,14 +18,6 @@ package Tracing is
    function Init_Ray
      (cam : Camera.Apparatus; dir : Vertex; t_min, t_max : Float) return Ray;
 
-   function t_min (R : Ray) return Float;
-
-   function t_max (R : Ray) return Float;
-
-   function Ray_Direction (R : Ray) return Vertex;
-
-   function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex;
-
    function Cast (R : Ray; Objs : ObjLoader.Scene) return Color;
 
    type Hit is record
@@ -47,6 +39,12 @@ private
 
    end record;
 
-   procedure Intersect (Vs : V_List.Vector; R : Ray; H : in out Hit);
+   function Is_In_Range (R : Ray; t : Float) return Boolean;
+
+   function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex;
+
+   function Point_In_Triangle (a, b, ε : Float) return Boolean;
+
+   procedure Intersect (R : Ray; Vs : V_List.Vector; H : in out Hit);
 
 end Tracing;
