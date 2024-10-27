@@ -3,7 +3,7 @@ with Math.Geometry;
 package Sources is
 
    type Abstract_Source is abstract tagged record
-      origin : Math.Geometry.Vertex;
+      origin : Math.Point;
 
    end record;
 

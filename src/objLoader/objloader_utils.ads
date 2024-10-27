@@ -12,9 +12,9 @@ package ObjLoader_Utils is
    package S_U renames Ada.Strings.Unbounded;
    package S_M renames Ada.Strings.Maps;
 
-   function Format_To_Vertex (Line : String) return Math.Geometry.Vertex;
+   function Format_To_Vertex (Line : String) return Math.Point;
    function Format_To_Texture (Line : String) return Math.Geometry.Texture;
-   function Format_To_Normal (Line : String) return Math.Geometry.Normal;
+   function Format_To_Normal (Line : String) return Math.Point;
    function Format_To_Face (Line : String) return Math.Geometry.Face;
 
 private

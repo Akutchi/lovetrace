@@ -1,5 +1,3 @@
-with Ada.Text_IO;
-
 package body Math.Tracing is
 
    --------------
@@ -7,7 +5,7 @@ package body Math.Tracing is
    --------------
 
    function Init_Ray
-     (cam : Camera.Apparatus; dir : Vertex; t_min, t_max : Float) return Ray
+     (cam : Camera.Apparatus; dir : Point; t_min, t_max : Float) return Ray
    is
       R : Ray;
    begin
@@ -34,18 +32,9 @@ package body Math.Tracing is
    -- To_Camera_Coordinates --
    ---------------------------
 
-   function To_Camera_Coordinates (R : Ray; v : Vertex) return Vertex is
+   function To_Camera_Coordinates (R : Ray; v : Point) return Point is
 
-      v_shift : constant Vertex := v - R.cam.origin;
-   begin
-
-      return Rotate (Rotate (v_shift, 'y', R.cam.alpha_y), 'x', R.cam.alpha_x);
-
-   end To_Camera_Coordinates;
-
-   function To_Camera_Coordinates (R : Ray; n : Normal) return Normal is
-
-      v_shift : constant Normal := n - R.cam.origin;
+      v_shift : constant Point := v - R.cam.origin;
    begin
 
       return Rotate (Rotate (v_shift, 'y', R.cam.alpha_y), 'x', R.cam.alpha_x);
@@ -69,19 +58,19 @@ package body Math.Tracing is
      (R : Ray; Vs : V_List.Vector; Ns : N_List.Vector; H : in out Hit)
    is
 
-      C : constant Vertex := R.To_Camera_Coordinates (Vs (1));
-      A : constant Vertex := R.To_Camera_Coordinates (Vs (2));
-      B : constant Vertex := R.To_Camera_Coordinates (Vs (3));
+      C : constant Point := R.To_Camera_Coordinates (Vs (1));
+      A : constant Point := R.To_Camera_Coordinates (Vs (2));
+      B : constant Point := R.To_Camera_Coordinates (Vs (3));
 
-      N1 : constant Normal := R.To_Camera_Coordinates (Ns (1));
-      N2 : constant Normal := R.To_Camera_Coordinates (Ns (2));
-      N3 : constant Normal := R.To_Camera_Coordinates (Ns (3));
+      N1 : constant Point := R.To_Camera_Coordinates (Ns (1));
+      N2 : constant Point := R.To_Camera_Coordinates (Ns (2));
+      N3 : constant Point := R.To_Camera_Coordinates (Ns (3));
 
-      u_neg : constant Vertex := (-1.0) * R.dir;
+      u_neg : constant Point := (-1.0) * R.dir;
 
-      CA : constant Vertex := A - C;
-      CB : constant Vertex := B - C;
-      CO : constant Vertex := (-1.0) * C;
+      CA : constant Point := A - C;
+      CB : constant Point := B - C;
+      CO : constant Point := (-1.0) * C;
 
       M : constant Real_Matrix :=
         ((Real (CA.x), Real (CB.x), Real (u_neg.x)),
@@ -123,11 +112,11 @@ package body Math.Tracing is
    --------------
 
    function Value_At
-     (R : Ray; t : Float; Ray_From_Camera : Boolean) return Vertex
+     (R : Ray; t : Float; Ray_From_Camera : Boolean) return Point
    is
 
-      o : constant Vertex :=
-        (if Ray_From_Camera then (0.0, 0.0, 0.0, 1.0) else R.cam.origin);
+      o : constant Point :=
+        (if Ray_From_Camera then (0.0, 0.0, 0.0) else R.cam.origin);
    begin
 
       if t > R.t_max then
@@ -146,14 +135,12 @@ package body Math.Tracing is
    ---------------------
 
    function Light_Intensity
-     (R     : Ray;
-      at_P  : Vertex;
-      N     : Normal;
-      Light : Sources.Abstract_Source'Class) return Color
+     (R : Ray; at_P, N : Point; Light : Sources.Abstract_Source'Class)
+      return Color
    is
 
       I : constant Color := Choose ("Red");
-      L : constant Vertex := Normalize (at_P - Light.origin);
+      L : constant Point := Normalize (at_P - Light.origin);
       η : constant Float := 1.0;
 
       dempening : constant Float := η * Float'Max (0.0, L * N);
@@ -178,7 +165,7 @@ package body Math.Tracing is
 
       H               : Hit;
       Current_t       : Float := -1.0;
-      Normal_On_Touch : Normal;
+      Normal_On_Touch : Point;
 
    begin
 

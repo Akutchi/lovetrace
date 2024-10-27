@@ -5,7 +5,7 @@ package body Camera is
    ----------------------
 
    function Create_Apparatus
-     (The_Eye                                   : Math.Geometry.Vertex;
+     (The_Eye                                   : Math.Point;
       Screen_Distance, Vision, alpha_y, alpha_x : Float;
       Demi_Width, Demi_Height                   : Integer) return Apparatus
    is

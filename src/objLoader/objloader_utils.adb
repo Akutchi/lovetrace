@@ -73,24 +73,17 @@ package body ObjLoader_Utils is
    -- Format_To_Vertex --
    ----------------------
 
-   function Format_To_Vertex (Line : String) return Math.Geometry.Vertex is
+   function Format_To_Vertex (Line : String) return Math.Point is
 
       Token_List : Line_Components.Vector;
-      v          : Math.Geometry.Vertex;
    begin
 
       Token_List := Tokenize_Line (Line, Whitespace);
-      v :=
+
+      return
         (UnboundedString_To_Float (Token_List (1)),
          UnboundedString_To_Float (Token_List (2)),
-         UnboundedString_To_Float (Token_List (3)),
-         1.0);
-
-      if Has_W (Token_List) then
-         v.w := UnboundedString_To_Float (Token_List (4));
-      end if;
-
-      return v;
+         UnboundedString_To_Float (Token_List (3)));
 
    end Format_To_Vertex;
 
@@ -106,8 +99,7 @@ package body ObjLoader_Utils is
       Token_List := Tokenize_Line (Line, Whitespace);
       return
         (UnboundedString_To_Float (Token_List (1)),
-         UnboundedString_To_Float (Token_List (2)),
-         UnboundedString_To_Float (Token_List (3)));
+         UnboundedString_To_Float (Token_List (2)));
 
    end Format_To_Texture;
 
@@ -115,10 +107,10 @@ package body ObjLoader_Utils is
    -- Format_To_Normal --
    ----------------------
 
-   function Format_To_Normal (Line : String) return Math.Geometry.Normal is
+   function Format_To_Normal (Line : String) return Math.Point is
 
       Token_List  : Line_Components.Vector;
-      Normal_Vect : Math.Geometry.Normal;
+      Normal_Vect : Math.Point;
    begin
 
       Token_List := Tokenize_Line (Line, Whitespace);
@@ -127,7 +119,7 @@ package body ObjLoader_Utils is
          UnboundedString_To_Float (Token_List (2)),
          UnboundedString_To_Float (Token_List (3)));
 
-      return Math.Geometry.Normalize (Normal_Vect);
+      return Math.Normalize (Normal_Vect);
 
    end Format_To_Normal;
 
