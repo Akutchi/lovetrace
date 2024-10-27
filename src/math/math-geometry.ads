@@ -2,21 +2,6 @@ with Ada.Containers.Indefinite_Vectors;
 
 package Math.Geometry is
 
-   type Texture is record
-
-      u, v : Float;
-   end record;
-
-   type Indices_List is array (Positive range 1 .. 3) of Positive;
-
-   type Face is record
-
-      Vertices_Indices : Indices_List;
-      Textures_Indices : Indices_List;
-      Normals_Indices  : Indices_List;
-
-   end record;
-
    package V_List is new
      Ada.Containers.Indefinite_Vectors
        (Index_Type   => Positive,
@@ -29,17 +14,34 @@ package Math.Geometry is
         Element_Type => Point,
         "="          => "=");
 
+   type Texture is record
+
+      u, v : Float;
+   end record;
+
    package T_List is new
      Ada.Containers.Indefinite_Vectors
        (Index_Type   => Positive,
         Element_Type => Texture,
         "="          => "=");
 
+   type Indices_List is array (Positive range 1 .. 3) of Positive;
+
+   type Face is record
+
+      Vertices_Indices : Indices_List;
+      Textures_Indices : Indices_List;
+      Normals_Indices  : Indices_List;
+
+   end record;
+
    package F_List is new
      Ada.Containers.Indefinite_Vectors
        (Index_Type   => Positive,
         Element_Type => Face,
         "="          => "=");
+
+   function Normal_From_Points (Anchor, A, B : Point) return Point;
 
    function Get_Face_Normals
      (Ns            : N_List.Vector;

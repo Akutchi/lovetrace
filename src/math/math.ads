@@ -23,8 +23,6 @@ package Math is
 
    function "-" (p1, p2 : Point) return Point;
 
-   function Normal_From_Points (Anchor, A, B : Point) return Point;
-
    function Normalize (p : Point) return Point;
 
    function Rotate (p : Point; axis : Character; α : Float) return Point;

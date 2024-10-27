@@ -1,4 +1,4 @@
-with Math.Geometry;
+with Math;
 
 package Camera is
 

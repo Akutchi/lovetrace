@@ -41,23 +41,6 @@ package body Math is
       return p1 + (-1.0) * p2;
    end "-";
 
-   ------------------------
-   -- Normal_From_Points --
-   ------------------------
-
-   function Normal_From_Points (Anchor, A, B : Point) return Point is
-
-      AnA : constant Point := A - Anchor;
-      AnB : constant Point := B - Anchor;
-   begin
-
-      return
-        (AnA.y * AnB.z - AnA.z * AnB.y,
-         -(AnA.x * AnB.z - AnA.z * AnB.x),
-         (AnA.x * AnB.y - AnA.y * AnB.x));
-
-   end Normal_From_Points;
-
    ---------------
    -- Normalize --
    ---------------
