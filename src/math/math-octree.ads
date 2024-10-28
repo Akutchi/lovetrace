@@ -89,7 +89,13 @@ package Math.Octree is
 
    procedure Next_Depth
      (O_Tree : in out Octree_Struct.Tree;
-      Parent : in out Octree_Struct.Cursor);
+      Parent : in out Octree_Struct.Cursor;
+      Vs     : V_List.Vector);
+
+   procedure Liberate_Memory
+     (O_Tree : in out Octree_Struct.Tree; Box : in out Octree_Struct.Cursor);
+   --  When done creating the octree, if the node is not a leaf, we don't
+   --  need the Fi's duplicates.
 
    procedure Print (Box : Octree_Struct.Cursor);
 
@@ -98,6 +104,15 @@ private
    MIN_DEPTH : constant Count_Type := 10;
    --  represent a region with <= 10 faces
 
-   function Create_Box (Ith : Positive; From : Octree_Node) return Octree_Node;
+   function Is_In_Dim_Bounds
+     (V : Point; Bounds : Real_Vector; dim : Character) return Natural;
+
+   function Is_In_Range
+     (Vs : V_List.Vector; Fi : F_List.Vector; Bounds : Real_Vector)
+      return F_List.Vector;
+
+   function Create_Box
+     (Ith : Positive; From : Octree_Node; Vs : V_List.Vector)
+      return Octree_Node;
 
 end Math.Octree;

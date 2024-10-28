@@ -18,12 +18,14 @@ procedure Octree_Model is
 
 begin
 
-   ObjLoader.Loader ("../scenes/sphere.obj", Objs);
+   ObjLoader.Loader ("../scenes/triangle.obj", Objs);
    Node := ((-1.0, 1.0, -1.0, 1.0, -1.0, 1.0), Objs.Faces_List);
    M_OS.Append_Child (O_Tree, Root, Node);
    First_Child := M_OS.First_Child (Root);
 
-   M_O.Next_Depth (O_Tree, First_Child);
+   M_O.Next_Depth (O_Tree, First_Child, Objs.Vertex_List);
+   M_O.Liberate_Memory (O_Tree, First_Child);
+
    M_O.Print (First_Child);
 
 end Octree_Model;
