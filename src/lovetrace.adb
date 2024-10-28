@@ -51,7 +51,7 @@ procedure Lovetrace is
 
 begin
 
-   ObjLoader.Loader ("../scenes/pyramid.obj", Objs);
+   ObjLoader.Loader ("../scenes/basic_scene.obj", Objs);
 
    Node := (M_O.Get_Scene_Bounds (Objs.Vertex_List), Objs.Faces_List);
    M_OS.Append_Child (O_Tree, Root, Node);
@@ -71,7 +71,7 @@ begin
 
    begin
 
-      light.origin := (0.0, 20.0, 5.0); --  in eye coordinates
+      light.origin := (5.0, 5.0, 20.0); --  in eye coordinates
 
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
          for Z in reverse cam.screen.MIN_Z + 1 .. cam.screen.MAX_Z loop

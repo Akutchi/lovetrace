@@ -55,8 +55,8 @@ package body Math.Geometry is
             F3 : constant Positive := 4 - J;
 
             Anchor : constant Point := Face_Vertices (F1);
-            B      : constant Point := Face_Vertices (F2);
-            A      : constant Point := Face_Vertices (F3);
+            A      : constant Point := Face_Vertices (F2);
+            B      : constant Point := Face_Vertices (F3);
             --  Inversed so that the right hand rule is respected. a.k.a
             --  The Normal in pointing "up".
 

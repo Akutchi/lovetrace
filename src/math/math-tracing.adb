@@ -1,3 +1,5 @@
+with Ada.Text_IO;
+
 package body Math.Tracing is
 
    --------------
@@ -207,7 +209,7 @@ package body Math.Tracing is
          a : constant Float := Float (Sol (Sol'First));
          b : constant Float := Float (Sol (Sol'First + 1));
          t : constant Float := Float (Sol (Sol'First + 2));
-         ε : constant Float := 0.001;
+         ε : constant Float := 0.0001;
 
       begin
 
