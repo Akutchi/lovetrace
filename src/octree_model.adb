@@ -1,8 +1,6 @@
 with Math.Octree;
 with ObjLoader;
 
-with Math; use Math;
-
 procedure Octree_Model is
 
    package M_O renames Math.Octree;
@@ -18,12 +16,12 @@ procedure Octree_Model is
 
 begin
 
-   ObjLoader.Loader ("../scenes/monkey.obj", Objs);
-   Node := ((-1.0, 1.0, -1.0, 1.0, -1.0, 1.0), Objs.Faces_List);
+   ObjLoader.Loader ("../scenes/tree_part.obj", Objs);
+   Node := (M_O.Get_Scene_Bounds (Objs.Vertex_List), Objs.Faces_List);
    M_OS.Append_Child (O_Tree, Root, Node);
    First_Child := M_OS.First_Child (Root);
 
-   M_O.Next_Depth (O_Tree, First_Child, Objs.Vertex_List);
+   M_O.Create_Octree (O_Tree, Objs.Vertex_List, Objs.Faces_List);
 
    M_O.Print (First_Child);
 

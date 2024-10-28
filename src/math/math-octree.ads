@@ -89,10 +89,10 @@ package Math.Octree is
 
    function Get_Scene_Bounds (Vs : V_List.Vector) return Real_Vector;
 
-   procedure Next_Depth
+   procedure Create_Octree
      (O_Tree : in out Octree_Struct.Tree;
-      Parent : in out Octree_Struct.Cursor;
-      Vs     : V_List.Vector);
+      Vs     : V_List.Vector;
+      Fs     : F_List.Vector);
 
    procedure Print (Box : Octree_Struct.Cursor);
 
@@ -101,15 +101,27 @@ private
    MIN_DEPTH : constant Count_Type := 10;
    --  represent a region with <= 10 faces
 
-   function Is_In_Dim_Bounds
-     (V : Point; Bounds : Real_Vector; dim : Character) return Natural;
+   function Is_Vertex_In_Dim (Vc, min, max : Float) return Boolean;
+
+   function Is_Vertex_In_Bounds
+     (V : Point; Bounds : Real_Vector) return Natural;
 
    function Is_In_Range
      (Vs : V_List.Vector; Fi : F_List.Vector; Bounds : Real_Vector)
       return F_List.Vector;
+   --  I'm still not checking for patological cases of faces with one vertices
+   --  in separate boxes.
+   --  Moreover, I assume that if a face has only one vertex in a box, it means
+   --  that either it is a patological case (see above) or that it is counted
+   --  in another adjacent box.
 
    function Create_Box
      (Ith : Positive; From : Octree_Node; Vs : V_List.Vector)
       return Octree_Node;
+
+   procedure Octree_Next_Depth
+     (O_Tree : in out Octree_Struct.Tree;
+      Parent : in out Octree_Struct.Cursor;
+      Vs     : V_List.Vector);
 
 end Math.Octree;

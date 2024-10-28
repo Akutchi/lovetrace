@@ -57,4 +57,20 @@ package body ObjLoader is
 
    end Loader;
 
+   function Get_Scene_Barycenter (Objs : in out Scene) return Math.Point is
+
+      B : Math.Point := (0.0, 0.0, 0.0);
+      n : constant Float :=
+        Float (Math.Geometry.V_List.Length (Objs.Vertex_List));
+   begin
+
+      for V of Objs.Vertex_List loop
+
+         B := Math."+" (B, V);
+      end loop;
+
+      return Math."*" (1.0 / n, B);
+
+   end Get_Scene_Barycenter;
+
 end ObjLoader;

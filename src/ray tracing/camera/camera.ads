@@ -28,4 +28,6 @@ package Camera is
       Screen_Distance, Vision, alpha_z, alpha_x : Float;
       Demi_Width, Demi_Height                   : Integer) return Apparatus;
 
+   procedure Adjust_Origin (o : in out Math.Point; v : Math.Point);
+
 end Camera;

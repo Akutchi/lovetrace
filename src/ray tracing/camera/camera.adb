@@ -46,4 +46,13 @@ package body Camera is
 
    end Create_Apparatus;
 
+   -------------------
+   -- Adjust_Origin --
+   -------------------
+
+   procedure Adjust_Origin (o : in out Math.Point; v : Math.Point) is
+   begin
+      o := Math."+" (o, v);
+   end Adjust_Origin;
+
 end Camera;

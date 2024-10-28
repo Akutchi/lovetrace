@@ -26,11 +26,11 @@ procedure Lovetrace is
    Objs : ObjLoader.Scene;
 
    O_Tree      : M_OS.Tree := M_OS.Empty_Tree;
-   Root        : constant M_OS.Cursor := M_OS.Root (O_Tree);
    First_Child : M_OS.Cursor;
-   Node        : M_O.Octree_Node;
 
-   o : constant Math.Point := (1.5, 5.0, 0.5);
+   o     : Math.Point;
+   cam   : Camera.Apparatus;
+   light : Sources.Point_Source;
 
    dz : constant Float := 0.01;
    --  This is because, when intersecting a line with a triangle
@@ -43,11 +43,27 @@ procedure Lovetrace is
    --  making it so that the system cannot be solved for t
    --  (thus, no intersection).
 
-   cam : Camera.Apparatus :=
+   Image : IIO_H.Handle;
+
+begin
+
+   ObjLoader.Loader ("../scenes/tree_part.obj", Objs);
+
+   M_O.Create_Octree (O_Tree, Objs.Vertex_List, Objs.Faces_List);
+   First_Child := M_OS.First_Child (M_OS.Root (O_Tree));
+
+   --  Every vector are put in the "eye coordinates". Aka with o at (0, 0, 0).
+   --  I get the barycenter to automatically put the camera in the right place.
+   o := ObjLoader.Get_Scene_Barycenter (Objs);
+   Camera.Adjust_Origin (o, (0.5, 40.0, 0.5));
+
+   light.origin := (5.0, 5.0, 20.0);
+
+   cam :=
      Camera.Create_Apparatus
        (The_Eye         => o,
         Screen_Distance => 5.0,
-        alpha_z         => 0.3,
+        alpha_z         => 0.1,
         alpha_x         => 0.0,
         Vision          => 30.0,
         Demi_Width      => 200,
@@ -56,33 +72,17 @@ procedure Lovetrace is
    --  barycenter + the object width or smth
    --  to adapt to every scene.
 
-   light : Sources.Point_Source;
-
-   Image : IIO_H.Handle;
-
-begin
-
-   ObjLoader.Loader ("../scenes/basic_scene.obj", Objs);
-
-   Node := (M_O.Get_Scene_Bounds (Objs.Vertex_List), Objs.Faces_List);
-   M_OS.Append_Child (O_Tree, Root, Node);
-   First_Child := M_OS.First_Child (Root);
-
-   M_O.Next_Depth (O_Tree, First_Child, Objs.Vertex_List);
-
    Renderer.Create_Image ("../scenes_image/res.png", cam);
    IIO_O.Read ("../scenes_image/res.png", Image);
 
    declare
       Data : IIO.Image_Data := Image.Value;
 
-      unnorm_dir, dir : Math.Point; --  in eye coordinates
+      unnorm_dir, dir : Math.Point;
       Ray             : T.Ray;
       Pixel_Color     : Colors.Color;
 
    begin
-
-      light.origin := (5.0, 5.0, 20.0); --  in eye coordinates
 
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
          for Z in reverse cam.screen.MIN_Z + 1 .. cam.screen.MAX_X - 1 loop

@@ -4,6 +4,10 @@ package body Math.Octree is
 
    package T_IO renames Ada.Text_IO;
 
+   ----------------------
+   -- Get_Scene_Bounds --
+   ----------------------
+
    function Get_Scene_Bounds (Vs : V_List.Vector) return Real_Vector is
 
       min_x, max_x, min_y, max_y, min_z, max_z : Float := 0.0;
@@ -45,11 +49,23 @@ package body Math.Octree is
    end Get_Scene_Bounds;
 
    ----------------------
+   -- Is_Vertex_In_Dim --
+   ----------------------
+
+   function Is_Vertex_In_Dim (Vc, min, max : Float) return Boolean is
+
+      ε : constant Float := 0.01;
+   begin
+      return (if min + ε <= Vc and then Vc <= max - ε then True else False);
+
+   end Is_Vertex_In_Dim;
+
+   ----------------------
    -- Is_In_Dim_Bounds --
    ----------------------
 
-   function Is_In_Dim_Bounds
-     (V : Point; Bounds : Real_Vector; dim : Character) return Natural
+   function Is_Vertex_In_Bounds
+     (V : Point; Bounds : Real_Vector) return Natural
    is
 
       min_x : constant Float := Float (Bounds (1));
@@ -59,28 +75,17 @@ package body Math.Octree is
       min_z : constant Float := Float (Bounds (5));
       max_z : constant Float := Float (Bounds (6));
 
-      ε : constant Float := 0.05;
+      In_X : constant Boolean := Is_Vertex_In_Dim (V.x, min_x, max_x);
+      In_Y : constant Boolean := Is_Vertex_In_Dim (V.y, min_y, max_y);
+      In_Z : constant Boolean := Is_Vertex_In_Dim (V.z, min_z, max_z);
+
+      Vertex_In_Box : constant Boolean := In_X and then In_Y and then In_Z;
 
    begin
 
-      case dim is
-         when 'x' =>
-            return
-              (if min_x + ε <= V.x and then V.x <= max_x - ε then 1 else 0);
+      return (if Vertex_In_Box then 1 else 0);
 
-         when 'y' =>
-            return
-              (if min_y + ε <= V.y and then V.y <= max_y - ε then 1 else 0);
-
-         when 'z' =>
-            return
-              (if min_z + ε <= V.z and then V.z <= max_z - ε then 1 else 0);
-
-         when others =>
-            return 0;
-      end case;
-
-   end Is_In_Dim_Bounds;
+   end Is_Vertex_In_Bounds;
 
    -----------------
    -- Is_In_Range --
@@ -96,11 +101,12 @@ package body Math.Octree is
       for F of Fi loop
 
          declare
-            Idx       : constant Indices_List := F.Vertices_Indices;
+            Idx : constant Indices_List := F.Vertices_Indices;
+
             Vertex_In : constant Natural :=
-              Is_In_Dim_Bounds (Vs (Idx (1)), Bounds, 'x')
-              + Is_In_Dim_Bounds (Vs (Idx (1)), Bounds, 'y')
-              + Is_In_Dim_Bounds (Vs (Idx (1)), Bounds, 'z');
+              Is_Vertex_In_Bounds (Vs (Idx (1)), Bounds)
+              + Is_Vertex_In_Bounds (Vs (Idx (2)), Bounds)
+              + Is_Vertex_In_Bounds (Vs (Idx (3)), Bounds);
 
          begin
             if Vertex_In >= 2 then
@@ -134,7 +140,7 @@ package body Math.Octree is
    -- Next_Depth --
    ----------------
 
-   procedure Next_Depth
+   procedure Octree_Next_Depth
      (O_Tree : in out Octree_Struct.Tree;
       Parent : in out Octree_Struct.Cursor;
       Vs     : V_List.Vector)
@@ -156,25 +162,51 @@ package body Math.Octree is
 
                Octree_Struct.Append_Child (O_Tree, Parent, Bi);
                Current_Child := Octree_Struct.Last_Child (Parent);
-               Next_Depth (O_Tree, Current_Child, Vs);
+               Octree_Next_Depth (O_Tree, Current_Child, Vs);
 
                --  When done creating one branch, if the node is not a leaf,
                --  we don't need the Fi's duplicates that were temporarily
                --  stored.
-               --  if not Octree_Struct.Is_Leaf (Current_Child) then
+               if not Octree_Struct.Is_Leaf (Current_Child) then
 
-               --     Current_Child_Content :=
-               --       Octree_Struct.Element (Current_Child);
-               --     F_List.Clear (Current_Child_Content.Fi);
-               --     Octree_Struct.Replace_Element
-               --       (O_Tree, Current_Child, Current_Child_Content);
-               --  end if;
+                  Current_Child_Content :=
+                    Octree_Struct.Element (Current_Child);
+                  F_List.Clear (Current_Child_Content.Fi);
+                  Octree_Struct.Replace_Element
+                    (O_Tree, Current_Child, Current_Child_Content);
+               end if;
 
             end;
          end loop;
       end if;
 
-   end Next_Depth;
+   end Octree_Next_Depth;
+
+   -------------------
+   -- Create_Octree --
+   -------------------
+
+   procedure Create_Octree
+     (O_Tree : in out Octree_Struct.Tree;
+      Vs     : V_List.Vector;
+      Fs     : F_List.Vector)
+   is
+
+      Root : constant Octree_Struct.Cursor := Octree_Struct.Root (O_Tree);
+
+      First_Node  : Octree_Node;
+      First_Child : Octree_Struct.Cursor;
+   begin
+
+      First_Node := (Get_Scene_Bounds (Vs), Fs);
+      Octree_Struct.Append_Child (O_Tree, Root, First_Node);
+      First_Child := Octree_Struct.First_Child (Root);
+
+      Octree_Next_Depth (O_Tree, First_Child, Vs);
+      F_List.Clear (First_Node.Fi);
+      Octree_Struct.Replace_Element (O_Tree, First_Child, First_Node);
+
+   end Create_Octree;
 
    -----------
    -- Print --
@@ -192,23 +224,22 @@ package body Math.Octree is
 
    begin
 
-      T_IO.Put
-        (Tabs
-         & Real'Image (Bounds (1))
-         & " "
-         & Real'Image (Bounds (2))
-         & " "
-         & Real'Image (Bounds (3))
-         & " "
-         & Real'Image (Bounds (4))
-         & " "
-         & Real'Image (Bounds (5))
-         & " "
-         & Real'Image (Bounds (6)));
+      --  T_IO.Put
+      --    (Tabs
+      --     & Real'Image (Bounds (1))
+      --     & " "
+      --     & Real'Image (Bounds (2))
+      --     & " "
+      --     & Real'Image (Bounds (3))
+      --     & " "
+      --     & Real'Image (Bounds (4))
+      --     & " "
+      --     & Real'Image (Bounds (5))
+      --     & " "
+      --     & Real'Image (Bounds (6)));
+      --  T_IO.Put_Line (" ");
 
-      T_IO.Put (" and has" & Count_Type'Image (F_Length) & " faces stored");
-
-      T_IO.Put_Line (" ");
+      T_IO.Put_Line (Tabs & Count_Type'Image (F_Length) & " ");
 
       if not Octree_Struct.Is_Leaf (Box) then
          Octree_Struct.Iterate_Children (Box, Print'Access);

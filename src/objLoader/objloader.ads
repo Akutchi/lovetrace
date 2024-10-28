@@ -1,3 +1,4 @@
+with Math;
 with Math.Geometry;
 
 package ObjLoader is
@@ -12,6 +13,9 @@ package ObjLoader is
    end record;
 
    procedure Loader (File_Name : String; Objs : in out Scene);
+
+   function Get_Scene_Barycenter (Objs : in out Scene) return Math.Point;
+
 private
 
    VERTEX  : constant String := "v ";
