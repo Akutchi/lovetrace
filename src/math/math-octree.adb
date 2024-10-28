@@ -4,6 +4,46 @@ package body Math.Octree is
 
    package T_IO renames Ada.Text_IO;
 
+   function Get_Scene_Bounds (Vs : V_List.Vector) return Real_Vector is
+
+      min_x, max_x, min_y, max_y, min_z, max_z : Float := 0.0;
+   begin
+
+      for V of Vs loop
+
+         if V.x < min_x then
+            min_x := V.x;
+
+         elsif V.x >= max_x then
+            max_x := V.x;
+         end if;
+
+         if V.y < min_y then
+            min_y := V.y;
+
+         elsif V.y >= max_y then
+            max_y := V.y;
+         end if;
+
+         if V.z < min_z then
+            min_z := V.z;
+
+         elsif V.z >= max_z then
+            max_z := V.z;
+         end if;
+
+      end loop;
+
+      return
+        (Real (min_x),
+         Real (max_x),
+         Real (min_y),
+         Real (max_y),
+         Real (min_z),
+         Real (max_z));
+
+   end Get_Scene_Bounds;
+
    ----------------------
    -- Is_In_Dim_Bounds --
    ----------------------
@@ -110,45 +150,31 @@ package body Math.Octree is
                Bi : constant Octree_Node :=
                  Create_Box (Ith, From => Parent_Box, Vs => Vs);
 
-               Current_Child : Octree_Struct.Cursor;
+               Current_Child         : Octree_Struct.Cursor;
+               Current_Child_Content : Octree_Node;
             begin
 
                Octree_Struct.Append_Child (O_Tree, Parent, Bi);
                Current_Child := Octree_Struct.Last_Child (Parent);
                Next_Depth (O_Tree, Current_Child, Vs);
 
+               --  When done creating one branch, if the node is not a leaf,
+               --  we don't need the Fi's duplicates that were temporarily
+               --  stored.
+               --  if not Octree_Struct.Is_Leaf (Current_Child) then
+
+               --     Current_Child_Content :=
+               --       Octree_Struct.Element (Current_Child);
+               --     F_List.Clear (Current_Child_Content.Fi);
+               --     Octree_Struct.Replace_Element
+               --       (O_Tree, Current_Child, Current_Child_Content);
+               --  end if;
+
             end;
          end loop;
       end if;
 
    end Next_Depth;
-
-   ---------------------
-   -- Liberate_Memory --
-   ---------------------
-
-   procedure Liberate_Memory
-     (O_Tree : in out Octree_Struct.Tree; Box : in out Octree_Struct.Cursor)
-   is
-
-      Contents      : Octree_Node := Octree_Struct.Element (Box);
-      Current_Child : Octree_Struct.Cursor;
-   begin
-
-      if not Octree_Struct.Is_Leaf (Box) then
-
-         F_List.Clear (Contents.Fi);
-         Octree_Struct.Replace_Element (O_Tree, Box, Contents);
-         Current_Child := Octree_Struct.First_Child (Box);
-
-         while Octree_Struct.Has_Element (Current_Child) loop
-            Liberate_Memory (O_Tree, Current_Child);
-            Current_Child := Octree_Struct.Next_Sibling (Current_Child);
-         end loop;
-
-      end if;
-
-   end Liberate_Memory;
 
    -----------
    -- Print --

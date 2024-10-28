@@ -74,15 +74,15 @@ package body Math is
 
       case axis is
 
-         when 'y' =>
+         when 'z' =>
 
             declare
-               R_p : constant Real_Vector := (Real (p.x), Real (p.z));
+               R_p : constant Real_Vector := (Real (p.x), Real (p.y));
                R_u : constant Real_Vector := M * R_p;
 
             begin
                return
-                 (Float (R_u (R_u'First)), p.y, Float (R_u (R_u'First + 1)));
+                 (Float (R_u (R_u'First)), Float (R_u (R_u'First + 1)), p.z);
             end;
 
          when 'x' =>

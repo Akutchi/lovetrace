@@ -7,9 +7,9 @@ package Camera is
       Demi_Width, Demi_Height : Positive;
       Distance_From_The_Eye   : Float;
       vision                  : Float;
-      x, y                    : Integer; --  (0, 0) is at the center
+      x, z                    : Integer; --  (0, 0) is at the center
 
-      MIN_X, MAX_X, MIN_Y, MAX_Y : Integer;
+      MIN_X, MAX_X, MIN_Z, MAX_Z : Integer;
 
    end record;
 
@@ -19,13 +19,13 @@ package Camera is
       screen           : Screen_Details;
       l, r, t, b       : Positive;
       n, f             : Float;
-      alpha_y, alpha_x : Float;
+      alpha_z, alpha_x : Float;
 
    end record;
 
    function Create_Apparatus
      (The_Eye                                   : Math.Point;
-      Screen_Distance, Vision, alpha_y, alpha_x : Float;
+      Screen_Distance, Vision, alpha_z, alpha_x : Float;
       Demi_Width, Demi_Height                   : Integer) return Apparatus;
 
 end Camera;

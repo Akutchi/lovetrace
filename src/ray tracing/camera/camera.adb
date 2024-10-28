@@ -6,7 +6,7 @@ package body Camera is
 
    function Create_Apparatus
      (The_Eye                                   : Math.Point;
-      Screen_Distance, Vision, alpha_y, alpha_x : Float;
+      Screen_Distance, Vision, alpha_z, alpha_x : Float;
       Demi_Width, Demi_Height                   : Integer) return Apparatus
    is
 
@@ -24,11 +24,11 @@ package body Camera is
          Distance_From_The_Eye => Screen_Distance,
          vision                => Vision,
          x                     => 0,
-         y                     => 0,
+         z                     => 0,
          MIN_X                 => Integer (The_Eye.x) - Demi_Width,
          MAX_X                 => Integer (The_Eye.x) + Demi_Width,
-         MIN_Y                 => Integer (The_Eye.y) - Demi_Height,
-         MAX_Y                 => Integer (The_Eye.y) + Demi_Height);
+         MIN_Z                 => Integer (The_Eye.z) - Demi_Height,
+         MAX_Z                 => Integer (The_Eye.z) + Demi_Height);
 
       cam :=
         (The_Eye,
@@ -39,7 +39,7 @@ package body Camera is
          b       => Demi_Height,
          n       => n,
          f       => f,
-         alpha_y => alpha_y,
+         alpha_z => alpha_z,
          alpha_x => alpha_x);
 
       return cam;

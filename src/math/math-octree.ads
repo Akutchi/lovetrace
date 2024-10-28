@@ -87,15 +87,12 @@ package Math.Octree is
    package Octree_Struct is new
      Ada.Containers.Multiway_Trees (Octree_Node, "=");
 
+   function Get_Scene_Bounds (Vs : V_List.Vector) return Real_Vector;
+
    procedure Next_Depth
      (O_Tree : in out Octree_Struct.Tree;
       Parent : in out Octree_Struct.Cursor;
       Vs     : V_List.Vector);
-
-   procedure Liberate_Memory
-     (O_Tree : in out Octree_Struct.Tree; Box : in out Octree_Struct.Cursor);
-   --  When done creating the octree, if the node is not a leaf, we don't
-   --  need the Fi's duplicates.
 
    procedure Print (Box : Octree_Struct.Cursor);
 

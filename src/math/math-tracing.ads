@@ -2,10 +2,14 @@ with ObjLoader;
 with Camera;
 with Sources;
 
+with Math.Octree;
+
 with Math.Geometry; use Math.Geometry;
 with Colors;        use Colors;
 
 package Math.Tracing is
+
+   package M_O renames Math.Octree;
 
    type Ray is tagged private;
 
@@ -20,8 +24,10 @@ package Math.Tracing is
       return Color;
 
    function Cast
-     (R : Ray; Objs : ObjLoader.Scene; Light : Sources.Abstract_Source'Class)
-      return Color;
+     (R         : Ray;
+      Objs      : ObjLoader.Scene;
+      Tree_Root : M_O.Octree_Struct.Cursor;
+      Light     : Sources.Abstract_Source'Class) return Color;
 
    type Hit is record
 
@@ -42,13 +48,19 @@ private
 
    end record;
 
-   function Is_In_Range (R : Ray; t : Float) return Boolean;
-
    function To_Camera_Coordinates (R : Ray; v : Point) return Point;
+
+   function Box_Intersect
+     (R : Ray; Box : M_O.Octree_Struct.Cursor) return Float;
+
+   function Octree_Intersect
+     (R : Ray; Box : M_O.Octree_Struct.Cursor) return M_O.Octree_Struct.Cursor;
 
    function Point_In_Triangle (a, b, ε : Float) return Boolean;
 
-   procedure Intersect
+   function Is_In_Range (R : Ray; t : Float) return Boolean;
+
+   procedure Object_Intersect
      (R : Ray; Vs : V_List.Vector; Ns : N_List.Vector; H : in out Hit);
 
 end Math.Tracing;
