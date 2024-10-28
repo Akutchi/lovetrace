@@ -32,6 +32,17 @@ procedure Lovetrace is
 
    o : constant Math.Point := (1.5, 5.0, 0.5);
 
+   dz : constant Float := 0.01;
+   --  This is because, when intersecting a line with a triangle
+   --  (Cf. math-tracing.adb) if Z = 0, then the system looks like this :
+   --
+   --  | CAx  CBx  Ux     |  a    |  Yx
+   --  | CAy  CBy  Uy  *  |  b  = |  Yy
+   --  | CAz  CBz  0      |  t    |  Yz
+
+   --  making it so that the system cannot be solved for t
+   --  (thus, no intersection).
+
    cam : Camera.Apparatus :=
      Camera.Create_Apparatus
        (The_Eye         => o,
@@ -74,12 +85,12 @@ begin
       light.origin := (5.0, 5.0, 20.0); --  in eye coordinates
 
       for X in cam.screen.MIN_X .. cam.screen.MAX_X - 1 loop
-         for Z in reverse cam.screen.MIN_Z + 1 .. cam.screen.MAX_Z loop
+         for Z in reverse cam.screen.MIN_Z + 1 .. cam.screen.MAX_X - 1 loop
 
             unnorm_dir :=
               (Float (X) / Float (cam.screen.MAX_X),
                -cam.n,
-               Float (Z) / Float (cam.screen.MAX_Z));
+               Float (Z) / Float (cam.screen.MAX_Z) + dz);
 
             dir := Math.Normalize (unnorm_dir);
 
